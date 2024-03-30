@@ -1,0 +1,123 @@
+[
+     {
+          "id": 1,
+          "title": "Remera",
+          "code": 31252146,
+          "description": "Nike",
+          "price": 20000,
+          "status": true,
+          "stock": 20,
+          "category": "remeras",
+          "thumbnail": "./assets/img/rem-nike"
+     },
+     {
+          "id": 2,
+          "title": "Remera",
+          "description": "Adidas",
+          "code": 36923146,
+          "price": 35000,
+          "status": true,
+          "stock": 15,
+          "category": "remeras",
+          "thumbnail": "./assets/img/rem-ad"
+     },
+     {
+          "id": 3,
+          "title": "Pantalon",
+          "description": "Nike",
+          "code": 369852146,
+          "price": 35000,
+          "status": true,
+          "stock": 15,
+          "category": "pantalones",
+          "thumbnail": "./assets/img/pant-nike"
+     },
+     {
+          "id": 4,
+          "title": "Pantalon-DriFit",
+          "description": "Nike",
+          "code": 3696857,
+          "price": 35000,
+          "status": true,
+          "stock": 15,
+          "category": "pantalones",
+          "thumbnail": "./assets/img/pant-nike"
+     },
+     {
+          "id": 5,
+          "title": "Short",
+          "description": "UnderArmour",
+          "code": 3216549,
+          "price": 15400,
+          "status": true,
+          "stock": 10,
+          "category": "shorts",
+          "thumbnail": "./assets/img/short-under"
+     },
+     {
+          "id": 6,
+          "title": "Pantalon",
+          "description": "Puma",
+          "code": 369234146,
+          "price": 11000,
+          "status": true,
+          "stock": 10,
+          "category": "pantalones",
+          "thumbnail": "./assets/img/pant-pum"
+     },
+     {
+          "id": 7,
+          "title": "Botines",
+          "description": "Nike",
+          "code": 369852344446,
+          "price": 40000,
+          "status": true,
+          "stock": 15,
+          "category": "botines",
+          "thumbnail": "./assets/img/bot-nike"
+     },
+     {
+          "id": 8,
+          "title": "Botines Borussia",
+          "description": "Puma",
+          "code": 987987987987,
+          "price": "365",
+          "status": true,
+          "stock": 10,
+          "category": "botines",
+          "thumbnails": []
+     },
+     {
+          "id": 9,
+          "title": "Camiseta dry-fit",
+          "description": "Puma",
+          "code": 996325,
+          "price": 15000,
+          "status": true,
+          "stock": 20,
+          "category": "remeras",
+          "thumbnails": []
+     },
+     {
+          "id": 10,
+          "title": "Short fútbol",
+          "description": "Adidas",
+          "code": 4524,
+          "price": 23000,
+          "status": true,
+          "stock": 12,
+          "category": "shorts",
+          "thumbnails": []
+     },
+     {
+          "id": 11,
+          "title": "Short fútbol",
+          "description": "Nike",
+          "code": 4951,
+          "price": "12850",
+          "status": "false",
+          "stock": 12,
+          "category": "shorts",
+          "thumbnails": []
+     }
+]
