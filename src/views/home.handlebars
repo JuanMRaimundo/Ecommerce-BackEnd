@@ -1,0 +1,22 @@
+<h2>SNSports</h2>
+<hr />
+<aside>
+	{{! <a href="/products">Productos</a> }}
+	<a
+		href="/realTimeProducts"
+		class="link-success link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+	>Productos del día</a>
+</aside>
+<main>
+	<h3>Bienvenido al mejor sitio de compras</h3>
+
+	<ul class="list-group list-group-numbered">
+		{{#each products}}
+			<li class="list-group-item">{{title}}</li>
+		{{/each}}
+	</ul>
+
+</main>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/products.js"></script>

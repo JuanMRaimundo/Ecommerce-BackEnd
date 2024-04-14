@@ -89,6 +89,7 @@ class ProductManager {
 					}
 				);
 				console.log("Producto añadido exitosamente");
+				return newProduct;
 			}
 		} catch (error) {
 			console.log(error.message);

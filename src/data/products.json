@@ -99,25 +99,58 @@
           "thumbnails": []
      },
      {
-          "id": 10,
-          "title": "Short fútbol",
-          "description": "Adidas",
-          "code": 4524,
-          "price": 23000,
+          "id": 11,
+          "title": "Campera",
+          "description": "Nike",
+          "code": 32165498,
+          "price": 100500,
           "status": true,
-          "stock": 12,
-          "category": "shorts",
+          "stock": 5,
+          "category": "camperas",
           "thumbnails": []
      },
      {
-          "id": 11,
-          "title": "Short fútbol",
+          "id": 12,
+          "title": "Remera",
           "description": "Nike",
-          "code": 4951,
-          "price": "12850",
-          "status": "false",
-          "stock": 12,
-          "category": "shorts",
+          "code": 3216558,
+          "price": 15500,
+          "status": true,
+          "stock": 10,
+          "category": "remeras",
+          "thumbnails": []
+     },
+     {
+          "id": 13,
+          "title": "Pantalon",
+          "description": "Nike",
+          "code": 32166668,
+          "price": 15500,
+          "status": true,
+          "stock": 10,
+          "category": "pantalones",
+          "thumbnails": []
+     },
+     {
+          "id": 14,
+          "title": "Pantalon",
+          "description": "Adidas",
+          "code": 3217778,
+          "price": 15500,
+          "status": true,
+          "stock": 10,
+          "category": "pantalones",
+          "thumbnails": []
+     },
+     {
+          "id": 15,
+          "title": "Campera",
+          "description": "Adidas",
+          "code": 32179208,
+          "price": 155500,
+          "status": true,
+          "stock": 5,
+          "category": "camperas",
           "thumbnails": []
      }
 ]

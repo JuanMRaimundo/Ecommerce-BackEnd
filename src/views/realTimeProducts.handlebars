@@ -1,0 +1,37 @@
+<h2>SNSports-Productos</h2>
+<hr />
+<aside>
+	<a
+		href="/"
+		class="link-success link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+	>Home</a>
+</aside>
+<main>
+	<h3>Productos del día</h3>
+
+	<table class="table">
+
+		<thead>
+			<tr>
+				<th scope="col">#</th>
+				<th scope="col">Producto</th>
+				<th scope="col">Precio</th>
+				<th scope="col">Stock</th>
+			</tr>
+		</thead>
+		<tbody id="products">
+			{{#each products}}
+				<tr>
+					<th scope="row">{{this.id}}</th>
+					<td>{{this.title}}</td>
+					<td>{{this.price}}</td>
+					<td>{{this.stock}}</td>
+				</tr>
+			{{/each}}
+		</tbody>
+
+	</table>
+</main>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/products.js"></script>

@@ -1,5 +1,6 @@
 import ProductManager from "../dao/ProductManager.js";
 import { Router } from "express";
+import { io } from "../app.js";
 
 export const router = Router();
 
@@ -41,20 +42,23 @@ router.get("/:pid", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
+	console.log("Datos del cuerpo de la solicitud:", req.body);
 	let {
 		title,
-		code,
 		description,
+		code,
 		price,
 		status,
 		stock,
 		category,
 		thumbnails = [],
 	} = req.body;
+	let newProduct;
+
 	if (
 		!title ||
-		!code ||
 		!description ||
+		!code ||
 		!price ||
 		!status ||
 		!stock ||
@@ -64,7 +68,7 @@ router.post("/", async (req, res) => {
 		return res.status(400).json({ error: `Complete los campos requeridos` });
 	}
 	try {
-		let newProduct = await productManager.addProducts(
+		newProduct = await productManager.addProducts(
 			title,
 			description,
 			code,
@@ -74,8 +78,11 @@ router.post("/", async (req, res) => {
 			category,
 			thumbnails
 		);
+		console.log("Nuevo producto agregado correctamente:", newProduct);
 		res.setHeader(`Content-Type`, `aplication/json`);
-		return res.status(200).json(newProduct);
+		console.log("Nuevo producto agregado:", newProduct);
+		io.emit("newProduct", newProduct);
+		return res.status(201).json({ payload: "Producto agregado", newProduct });
 	} catch (error) {
 		res.setHeader(`Content-Type`, `aplication/json`);
 		return res.status(500).json({
@@ -109,13 +116,18 @@ router.delete("/:pid", async (req, res) => {
 	let id = req.params.pid;
 	id = Number(id);
 	if (isNaN(id)) {
-		return res.json({ error: `Ingrese un id numérico` });
+		res.setHeader("Content-Type", "application/json");
+		return res.status(400).json({ error: `Ingrese un id numérico` });
 	}
 
 	try {
 		let productDeleted = await productManager.deleteProduct(id);
 		res.setHeader(`Content-Type`, `aplication/json`);
-		return res.status(200).json(productDeleted);
+		let productsActualiced = await productManager.getProducts();
+		io.emit("deletedProduct", productsActualiced);
+		return res
+			.status(201)
+			.json({ payload: `Producto eliminado`, productDeleted });
 	} catch (error) {
 		return res.json({ error: `Error desconocido al eliminar producto` });
 	}
