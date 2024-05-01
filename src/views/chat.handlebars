@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
 	<div class="container-fluid">
-		<a class="navbar-brand" href="#">SNSports</a>
+		<a class="navbar-brand" href="/">SNSports</a>
 		<button
 			class="navbar-toggler"
 			type="button"
@@ -24,17 +24,14 @@
 		</div>
 	</div>
 </nav>
-
 <main>
-	<h3>Bienvenido al mejor sitio de compras</h3>
-
-	<ul class="list-group list-group-numbered">
-		{{#each products}}
-			<li class="list-group-item">{{title}}</li>
-		{{/each}}
-	</ul>
+	<h3>Chat usuarios</h3>
+	<input type="text" id="message" />
+	<div id="messages"></div>
 
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/socket.io/socket.io.js"></script>
+<script src="/js/chat.js"></script>
 <script src="/js/products.js"></script>

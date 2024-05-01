@@ -1,14 +1,33 @@
-<h2>SNSports-Productos</h2>
-<hr />
-<aside>
-	<a
-		href="/"
-		class="link-success link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-	>Home</a>
-</aside>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+	<div class="container-fluid">
+		<a class="navbar-brand" href="/">SNSports</a>
+		<button
+			class="navbar-toggler"
+			type="button"
+			data-bs-toggle="collapse"
+			data-bs-target="#navbarNavAltMarkup"
+			aria-controls="navbarNavAltMarkup"
+			aria-expanded="false"
+			aria-label="Toggle navigation"
+		>
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+			<div class="navbar-nav">
+				<a
+					class="nav-link active"
+					aria-current="page"
+					href="/realTimeProducts"
+				>Productos del día</a>
+				<a class="nav-link" href="/chat">Mensajes</a>
+			</div>
+		</div>
+	</div>
+</nav>
+
 <main>
 	<h3>Productos del día</h3>
-
+	<button type="button" class="btn btn-info" id="btnAddProduct">Agregar producto</button>
 	<table class="table">
 
 		<thead>
@@ -17,6 +36,7 @@
 				<th scope="col">Producto</th>
 				<th scope="col">Precio</th>
 				<th scope="col">Stock</th>
+				<th scope="col">Actions</th>
 			</tr>
 		</thead>
 		<tbody id="products">
@@ -26,6 +46,9 @@
 					<td>{{this.title}}</td>
 					<td>{{this.price}}</td>
 					<td>{{this.stock}}</td>
+					<td>
+						<button type="button" class="btn btn-danger">Eliminar</button>
+					</td>
 				</tr>
 			{{/each}}
 		</tbody>

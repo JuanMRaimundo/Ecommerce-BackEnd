@@ -1,7 +1,7 @@
 import fs from "fs";
-import ProductManager from "../dao/ProductManager.js";
+import { ProductManagerFileSystem as ProductManager } from "./ProductManagerFileSystem.js";
 
-class CartManager {
+export class CartManagerFileSystem {
 	path;
 	constructor(rootFile) {
 		this.path = rootFile;
@@ -82,5 +82,3 @@ class CartManager {
 	async upDateCart() {}
 	async deleteCart() {}
 }
-
-export default CartManager;

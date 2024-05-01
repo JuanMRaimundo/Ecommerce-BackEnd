@@ -1,6 +1,6 @@
 import fs from "fs";
 
-class ProductManager {
+export class ProductManagerFileSystem {
 	path;
 
 	COUNTER = 0;
@@ -147,4 +147,3 @@ class ProductManager {
 		return Math.floor(Math.random() * 1000);
 	} */
 }
-export default ProductManager;

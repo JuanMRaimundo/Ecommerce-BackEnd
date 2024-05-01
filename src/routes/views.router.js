@@ -1,5 +1,5 @@
 import { Router } from "express";
-import ProductManager from "../dao/ProductManager.js";
+import { ProductManagerFileSystem as ProductManager } from "../dao/ProductManagerFileSystem.js";
 
 export const router = Router();
 
@@ -10,12 +10,6 @@ router.get("/", async (req, res) => {
 	res.setHeader(`Content-Type`, `text/html`);
 	res.status(200).render(`home`, { products });
 });
-/* router.get("/products", async (req, res) => {
-	let products = await productManager.getProducts();
-
-	res.setHeader(`Content-Type`, `text/html`);
-	res.status(200).render(`products`, { products });
-}); */
 
 router.get("/realTimeProducts", async (req, res) => {
 	let products;
@@ -30,4 +24,9 @@ router.get("/realTimeProducts", async (req, res) => {
 	}
 	res.setHeader(`Content-Type`, `text/html`);
 	res.status(200).render(`realTimeProducts`, { products });
+});
+
+router.get("/chat", async (req, res) => {
+	res.setHeader(`Content-Type`, `text/html`);
+	res.status(200).render(`chat`);
 });

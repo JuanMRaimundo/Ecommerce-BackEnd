@@ -7,3 +7,27 @@ body {
 main {
 	padding: 6vh;
 }
+#messages {
+	margin-top: 15px;
+	width: 90%;
+	height: 350px;
+	overflow-y: scroll;
+	box-shadow: 0px 0px 5px #333 inset;
+	padding: 5px;
+	background-color: rgb(179, 185, 177);
+}
+
+.message {
+	border: 1px solid #868080;
+	border-radius: 5px;
+	padding: 5px;
+	background-color: rgb(209, 155, 124);
+	display: inline-block;
+	margin-top: 5px;
+}
+.messageOff {
+	padding: 5px;
+	background-color: rgb(194, 79, 79);
+	display: inline-block;
+	margin-top: 5px;
+}
