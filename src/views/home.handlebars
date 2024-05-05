@@ -28,11 +28,52 @@
 <main>
 	<h3>Bienvenido al mejor sitio de compras</h3>
 
-	<ul class="list-group list-group-numbered">
-		{{#each products}}
-			<li class="list-group-item">{{title}}</li>
-		{{/each}}
-	</ul>
+	<table class="table">
+		<thead>
+			<tr>
+				<th scope="col">Cod.</th>
+				<th scope="col">Producto</th>
+				<th scope="col">Precio</th>
+				<th scope="col">Stock</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{#each payload}}
+				<tr>
+					<td>{{code}}</td>
+					<td>{{title}}</td>
+					<td>{{price}}</td>
+					<td>{{stock}}</td>
+				</tr>
+			{{/each}}
+		</tbody>
+	</table>
+	<nav aria-label="Page navigation example">
+		<ul class="pagination">
+
+			<li class="page-item"><a class="page-link" href="/?page=1">Pág.1</a></li>
+			{{#if hasPrevPage}}
+				<li class="page-item">
+					<a class="page-link" href="/?page={{prevPage}}">Ant.</a>
+
+				</li>
+
+			{{/if}}
+			{{#if hasNextPage}}
+				<li class="page-item">
+					<a class="page-link" href="/?page={{nextPage}}">Sig.</a>
+
+				</li>
+
+			{{/if}}
+			<li class="page-item">
+
+				<a class="page-link" href="/?page={{totalPages}}">Última Pág.</a>
+			</li>
+
+		</ul>
+
+	</nav>
 
 </main>
 

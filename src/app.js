@@ -8,7 +8,7 @@ import { router as cartRouter } from "./routes/cart.router.js";
 import { router as viewsRouter } from "./routes/views.router.js";
 import mongoose from "mongoose";
 import { messageModel } from "./dao/models/messageModel.js";
-import { disconnect } from "process";
+import { productModel } from "./dao/models/productModel.js";
 
 const PORT = 8080;
 const app = express();
@@ -46,20 +46,70 @@ connDB();
 
 let users = []; //array para mostrar en el DOM...
 
-io.on("connection", (socket) => {
+const getPreviousMessages = async () => {
+	try {
+		const messages = await messageModel.find();
+		return messages;
+	} catch (error) {
+		console.log("Error al obtener mensajes previos:", error.message);
+		return [];
+	}
+};
+/* socket.on("addProduct", newProduct); */
+
+io.on("connection", async (socket) => {
 	console.log(`conectado el ${socket.id}`);
-	socket.on("id", (email) => {
-		users.push({ id: socket.id, email });
-		socket.emit("prevMessages", messagesArray);
-		socket.broadcast.emit("newUser", email);
-	});
-	socket.on("message", async (email, message) => {
+	let products;
+	try {
+		products = await productModel.find();
+		socket.emit("products", products);
+		const prevMessages = await getPreviousMessages();
+		socket.emit("prevMessages", prevMessages);
+	} catch (error) {
+		console.log(
+			"Error al enviar mensajes previos o productos al cliente:",
+			error.message
+		);
+	}
+
+	socket.on("id", (user) => {
 		try {
-			const newMessage = new messageModel({ user: email, message });
-			await newMessage.save();
-			io.emit("newMessage", email, message);
+			users.push({ id: socket.id, user });
+			socket.broadcast.emit("newUser", user);
 		} catch (error) {
 			console.log(`Error ${error.message} al conectar con la BD`);
+		}
+	});
+	socket.on("message", async (user, message) => {
+		try {
+			const newMessage = new messageModel({ user: user, message });
+			await newMessage.save();
+			io.emit("newMessage", user, message);
+		} catch (error) {
+			console.log(`Error ${error.message} al conectar con la BD`);
+		}
+	});
+	socket.on("addProductForm", async (producto) => {
+		const newProduct = await productModel.create({ ...producto });
+		if (newProduct) {
+			/* socket.emit("productos", products); */
+			socket.emit("newProduct", newProduct);
+		}
+	});
+	/* socket.on("deletedProduct", (productId) => {
+		// Eliminar la fila correspondiente al producto eliminado de la tabla
+		const deletedRow = document.getElementById(productId);
+		if (deletedRow) {
+			deletedRow.remove();
+		}
+	}); */
+	socket.on("deleteProduct", async (productId) => {
+		console.log(productId);
+		try {
+			await productModel.findByIdAndDelete(productId);
+			socket.emit("deletedProduct", productId);
+		} catch (error) {
+			console.log(`Error al eliminar el producto: ${error.message}`);
 		}
 	});
 	socket.on("disconnect", () => {
@@ -69,6 +119,8 @@ io.on("connection", (socket) => {
 		}
 	});
 });
+
+//el Servidor espera el evento para agregar el producto solicitado por el cliente
 
 //juanmr093
 //SNSportNudos

@@ -1,4 +1,5 @@
 import { cartsModel } from "./models/cartModel.js";
+import mongoose from "mongoose";
 
 export class CartManagerMongo {
 	async generateId() {
@@ -11,27 +12,41 @@ export class CartManagerMongo {
 	}
 
 	async getCarts() {
-		return await cartsModel.find();
+		//correcto
+		let carts = await cartsModel
+			.find()
+			.populate({ path: "products.product" })
+			.lean();
+		console.log(JSON.stringify(carts, null, 5));
+		return carts;
 	}
 	async getCartBy(filter) {
-		return await cartsModel.findOne({ filter });
+		return await cartsModel.findOne({ filter }).lean();
 	}
 	async getCartById(id) {
-		return await cartsModel.findOne({ _id: id });
+		//correcto
+		return await cartsModel.findOne({ _id: id }).populate("products.product");
 	}
 	async createCart(product) {
+		//correcto
 		return await cartsModel.create(product);
 	}
 	async addToCart(cid, pid) {
+		//correcto
 		try {
 			let searchCart = await this.getCartById(cid);
-			let quantityValidation = searchCart.products.some((p) => p.id == pid);
+			console.log(searchCart);
+			let productIndex = searchCart.products.findIndex(
+				(p) => p.product && p.product._id.toString() === pid
+			);
 
-			if (quantityValidation) {
-				let findProduct = searchCart.products.find((p) => p.id == pid);
-				findProduct.quantity = findProduct.quantity + 1;
+			if (productIndex !== -1) {
+				searchCart.products[productIndex].quantity += 1;
 			} else {
-				searchCart.products.push({ id: pid, quantity: 1 });
+				searchCart.products.push({
+					product: new mongoose.Types.ObjectId(pid),
+					quantity: 1,
+				});
 			}
 
 			await searchCart.save();
@@ -40,6 +55,71 @@ export class CartManagerMongo {
 		}
 	}
 
-	async upDateCart() {}
-	async deleteCart() {}
+	async upDateCart(cid, pid, quantity) {
+		//correcto
+		try {
+			let updatedCart = await cartsModel.findOneAndUpdate(
+				{ _id: cid, "products.product": pid },
+				{ $set: { "products.$.quantity": quantity } },
+				{ new: true }
+			);
+			console.log({ quantity });
+			console.log(updatedCart);
+			let cart = await cartsModel.findOne({ _id: cid });
+			console.log(cart); // Verificar el carrito actualizado
+			return updatedCart;
+		} catch (error) {
+			console.error(error);
+			throw new Error(
+				"Error al actualizar la cantidad del producto en el carrito"
+			);
+		}
+	}
+	async upDateQuantityCart(cid, pid, quantity) {
+		//correcto
+		try {
+			let updatedCart = await cartsModel.findOneAndUpdate(
+				{ _id: cid, "products.product": pid },
+				/* {products: {pid}}, */
+				{ $set: { "products.$.quantity": quantity } },
+				{ new: true }
+			);
+			console.log({ quantity });
+			console.log(updatedCart);
+			return updatedCart;
+		} catch (error) {
+			console.error(error);
+			throw new Error(
+				"Error al actualizar la cantidad del producto en el carrito"
+			);
+		}
+	}
+	async deleteEveryProducts(cid) {
+		try {
+			let updatedCart = await cartsModel.findOneAndUpdate(
+				{ _id: cid },
+				{ $pull: { products: {} } },
+				{ new: true }
+			);
+			return updatedCart;
+		} catch (error) {
+			console.error(error);
+			console.error("Error al eliminar todos los productos del carrito");
+		}
+	}
+
+	async deleteProduct(cid, pid) {
+		//correcto
+		try {
+			let updatedCart = await cartsModel.findOneAndUpdate(
+				{ _id: cid },
+				{ $pull: { products: { product: pid } } },
+				{ new: true }
+			);
+			return updatedCart;
+		} catch (error) {
+			console.error(error);
+			console.error("Error al eliminar el producto del carrito");
+		}
+	}
 }
