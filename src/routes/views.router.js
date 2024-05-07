@@ -50,3 +50,5 @@ router.get("/chat", async (req, res) => {
 	res.setHeader(`Content-Type`, `text/html`);
 	res.status(200).render(`chat`);
 });
+
+router.get("/products", async (req, res) => {});

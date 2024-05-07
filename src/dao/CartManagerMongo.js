@@ -37,7 +37,7 @@ export class CartManagerMongo {
 			let searchCart = await this.getCartById(cid);
 			console.log(searchCart);
 			let productIndex = searchCart.products.findIndex(
-				(p) => p.product && p.product._id.toString() === pid
+				(p) => p.product._id.toString() === pid
 			);
 
 			if (productIndex !== -1) {
@@ -58,14 +58,18 @@ export class CartManagerMongo {
 	async upDateCart(cid, pid, quantity) {
 		//correcto
 		try {
-			let updatedCart = await cartsModel.findOneAndUpdate(
-				{ _id: cid, "products.product": pid },
-				{ $set: { "products.$.quantity": quantity } },
-				{ new: true }
-			);
+			let updatedCart = await cartsModel
+				.findOneAndUpdate(
+					{ _id: cid, "products.product": pid },
+					{ $set: { "products.$.quantity": quantity } },
+					{ new: true }
+				)
+				.populate("products.product");
 			console.log({ quantity });
 			console.log(updatedCart);
-			let cart = await cartsModel.findOne({ _id: cid });
+			let cart = await cartsModel
+				.findOne({ _id: cid })
+				.populate("products.product");
 			console.log(cart); // Verificar el carrito actualizado
 			return updatedCart;
 		} catch (error) {
@@ -78,12 +82,14 @@ export class CartManagerMongo {
 	async upDateQuantityCart(cid, pid, quantity) {
 		//correcto
 		try {
-			let updatedCart = await cartsModel.findOneAndUpdate(
-				{ _id: cid, "products.product": pid },
-				/* {products: {pid}}, */
-				{ $set: { "products.$.quantity": quantity } },
-				{ new: true }
-			);
+			let updatedCart = await cartsModel
+				.findOneAndUpdate(
+					{ _id: cid, "products.product": pid },
+					/* {products: {pid}}, */
+					{ $set: { "products.$.quantity": quantity } },
+					{ new: true }
+				)
+				.populate("products.product");
 			console.log({ quantity });
 			console.log(updatedCart);
 			return updatedCart;

@@ -1,6 +1,7 @@
 const socket = io();
 let tableProducts = document.getElementById("products");
 const form = document.getElementById("prodForm");
+const btnAddProduct = document.getElementById("btn-addProduct");
 
 socket.on("products", (products) => {
 	(tableProducts.innerHTML = ""),
@@ -105,3 +106,9 @@ socket.on("deletedProduct", (productId) => {
 		deletedRow.remove();
 	}
 });
+console.log("hola");
+const addToCart = async (pid) => {
+	console.log(`Código del producto ${pid}`);
+};
+
+/* btnAddProduct.addEventListener("click", async (event) => {}); */

@@ -14,9 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
 		let divMessages = document.getElementById("messages");
 		inputMessage.focus();
 
-		socket.emit("id", (user) => {
-			console.log(user);
-		});
+		const socket = io();
+
+		socket.emit("id", user);
 
 		socket.on("newUser", (user) => {
 			Swal.fire({
