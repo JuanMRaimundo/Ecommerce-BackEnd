@@ -106,9 +106,5 @@ socket.on("deletedProduct", (productId) => {
 		deletedRow.remove();
 	}
 });
-console.log("hola");
-const addToCart = async (pid) => {
-	console.log(`Código del producto ${pid}`);
-};
 
 /* btnAddProduct.addEventListener("click", async (event) => {}); */
