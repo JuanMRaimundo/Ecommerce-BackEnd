@@ -27,6 +27,13 @@ export class CartManagerMongo {
 		//correcto
 		return await cartsModel.findOne({ _id: id }).populate("products.product");
 	}
+	async getCartByIdForCartView(id) {
+		//correcto
+		return await cartsModel
+			.findOne({ _id: id })
+			.populate("products.product")
+			.lean();
+	}
 	async createCart(product) {
 		//correcto
 		return await cartsModel.create(product);

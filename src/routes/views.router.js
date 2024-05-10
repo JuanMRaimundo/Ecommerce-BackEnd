@@ -1,9 +1,11 @@
 import { Router } from "express";
 import { ProductManagerMongo as ProductManager } from "../dao/ProductManagerMongo.js";
+import { CartManagerMongo as CartManager } from "../dao/CartManagerMongo.js";
 
 export const router = Router();
 
 const productManager = new ProductManager();
+const cartManager = new CartManager();
 
 router.get("/", async (req, res) => {
 	let { page } = req.query;
@@ -42,8 +44,6 @@ router.get("/realTimeProducts", async (req, res) => {
 			error: `Error inesperado en el servidor-Intente más tarde`,
 		});
 	}
-	/* res.setHeader(`Content-Type`, `text/html`);
-	res.status(200).render(`realTimeProducts`, { products }); */
 });
 
 router.get("/chat", async (req, res) => {
@@ -51,4 +51,13 @@ router.get("/chat", async (req, res) => {
 	res.status(200).render(`chat`);
 });
 
-router.get("/products", async (req, res) => {});
+router.get("/carts/:cid", async (req, res) => {
+	const { cid } = req.params;
+	let cart = await cartManager.getCartByIdForCartView(cid);
+	if (!cart) {
+		cart = await cartManager.createCart();
+	}
+	console.log(cart);
+	res.setHeader("Content-Type", "text/html");
+	return res.status(200).render("carts", { cart });
+});

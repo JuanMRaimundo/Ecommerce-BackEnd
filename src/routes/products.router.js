@@ -13,7 +13,7 @@ router.get("/", async (req, res) => {
 		const { limit, sort } = req.query;
 		if (limit | sort) {
 			const productsLimit = await productModel.find().limit(Number(limit));
-			const productsSort = await productManager.getSortProducts(); //VER ORDENADOR O NO
+			const productsSort = await productManager.getSortProducts();
 			return res.status(200).json({ productsLimit, productsSort });
 		} else {
 			let products = await productManager.getPaginateProducts(5);
@@ -143,7 +143,7 @@ router.post("/", async (req, res) => {
 			detail: `${error.message}`,
 		});
 	}
-	if (exist) {
+	if (exist.length > 0) {
 		res.setHeader("Content-Type", "application/json");
 		return res.status(400).json({
 			error: `El producto con código ${code} ya existe en la Base de Datos`,
