@@ -6,9 +6,13 @@ import path from "path";
 import { router as productRouter } from "./routes/products.router.js";
 import { router as cartRouter } from "./routes/cart.router.js";
 import { router as viewsRouter } from "./routes/views.router.js";
+import { router as sessionsRouter } from "./routes/sessions.router.js";
 import mongoose from "mongoose";
 import { messageModel } from "./dao/models/messageModel.js";
 import { productModel } from "./dao/models/productModel.js";
+import sessions from "express-session";
+import MongoStore from "connect-mongo";
+import { redirectToLogin } from "./middleware/redirecting.js";
 
 const PORT = 8080;
 const app = express();
@@ -17,12 +21,28 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, `public`)));
 
+app.use(
+	sessions({
+		secret: "SNSCoderEC",
+		resave: true,
+		saveUninitialized: true,
+		store: MongoStore.create({
+			ttl: 3600,
+			mongoUrl:
+				"mongodb+srv://juanmr093:SNSportNudos@cluster0.o98kogt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+			dbName: "SNSport-EC",
+			collectionName: "sessionsSNS",
+		}),
+	})
+);
+/* app.use(redirectToLogin); */
 app.engine("handlebars", engine());
+
 app.set("view engine", "handlebars");
 app.set("views", path.join(__dirname, `views`));
-
 app.use("/api/products", productRouter);
 app.use("/api/carts", cartRouter);
+app.use("/api/sessions", sessionsRouter);
 app.use("/", viewsRouter);
 
 const serverHTTP = app.listen(PORT, () =>
@@ -55,7 +75,6 @@ const getPreviousMessages = async () => {
 		return [];
 	}
 };
-/* socket.on("addProduct", newProduct); */
 
 io.on("connection", async (socket) => {
 	console.log(`conectado el ${socket.id}`);
@@ -92,17 +111,10 @@ io.on("connection", async (socket) => {
 	socket.on("addProductForm", async (producto) => {
 		const newProduct = await productModel.create({ ...producto });
 		if (newProduct) {
-			/* socket.emit("productos", products); */
 			socket.emit("newProduct", newProduct);
 		}
 	});
-	/* socket.on("deletedProduct", (productId) => {
-		// Eliminar la fila correspondiente al producto eliminado de la tabla
-		const deletedRow = document.getElementById(productId);
-		if (deletedRow) {
-			deletedRow.remove();
-		}
-	}); */
+
 	socket.on("deleteProduct", async (productId) => {
 		console.log(productId);
 		try {

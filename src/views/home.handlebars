@@ -1,34 +1,9 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-	<div class="container-fluid">
-		<a class="navbar-brand" href="#">SNSports</a>
-		<button
-			class="navbar-toggler"
-			type="button"
-			data-bs-toggle="collapse"
-			data-bs-target="#navbarNavAltMarkup"
-			aria-controls="navbarNavAltMarkup"
-			aria-expanded="false"
-			aria-label="Toggle navigation"
-		>
-			<span class="navbar-toggler-icon"></span>
-		</button>
-		<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-			<div class="navbar-nav">
-				<a
-					class="nav-link active"
-					aria-current="page"
-					href="/realTimeProducts"
-				>Productos del día</a>
-				<a class="nav-link active" href="/chat">Mensajes</a>
-				<a class="nav-link active" href="/carts/6637b5e157aa5f255e943b93">Mi
-					carrito</a>
-			</div>
-		</div>
-	</div>
-</nav>
+{{>navbar}}
 
 <main>
 	<h3>Bienvenido al mejor sitio de compras</h3>
+
+	<a href="/carts/{{cartId}}">Ver mi carrito ({{cartId}})</a>
 
 	<table class="table">
 		<thead>
@@ -49,8 +24,7 @@
 					<td>{{stock}}</td>
 					<td><button
 							class="btn btn-info"
-							{{! id="btn-addProduct" }}
-							onclick="addToCart('{{_id}}')"
+							onclick="addToCart('{{_id}}', '{{../cartId}}')"
 						>Agregar al carrito</button></td>
 				</tr>
 			{{/each}}
@@ -84,7 +58,7 @@
 						class="btn btn-secondary"
 						data-bs-dismiss="modal"
 					>Cerrar</button>
-					<!-- Puedes agregar otros botones o acciones aquí -->
+					
 				</div>
 			</div>
 		</div>

@@ -1,0 +1,26 @@
+<div class="login">
+
+	<h2>Iniciar Sesión</h2>
+
+	<form action="/api/sessions/login" method="post" id="login-form">
+		{{#if error}}
+			<div class="badge text-bg-danger text-wrap" style="width: 6rem;">
+				{{error}}.
+			</div>
+		{{/if}}
+		<input type="email" name="email" placeholder="correo electrónico" />
+		<input type="password" name="password" placeholder="contraseña" />
+		<input type="text" name="web" value="web" hidden />
+
+		<br />
+
+		<input type="submit" value="Iniciar Sesión" />
+
+	</form>
+	<a class="nav-link" href="/registration"><button
+			class="btn btn-primary"
+		>Registrarse</button></a>
+
+</div>
+
+<script src="/js/auth/login.js"></script>

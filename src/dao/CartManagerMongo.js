@@ -5,7 +5,7 @@ export class CartManagerMongo {
 	async generateId() {
 		let carts = await this.getCarts();
 		let id = 1;
-		if (carts.lenght != 0) {
+		if (carts.length != 0) {
 			id = carts[carts.length - 1].id + 1;
 			return id;
 		}
