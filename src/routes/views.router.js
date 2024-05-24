@@ -14,7 +14,7 @@ router.get("/", auth, (req, res) => {
 
 router.get("/home", auth, async (req, res) => {
 	let { page } = req.query;
-	let cartId = req.session.user?.cart;
+	let cartId = req.session.user?.cart._id;
 	console.log(req.session);
 	/* 	let cart = { _id: req.session.user.cart._id }; */
 	console.log("ESTE ES EL CART DEL GET DE VIWES", cartId);
@@ -37,6 +37,7 @@ router.get("/home", auth, async (req, res) => {
 		prevPage,
 		nextPage,
 		cartId,
+		login: req.session.user,
 	});
 });
 
@@ -46,7 +47,9 @@ router.get("/realTimeProducts", auth, async (req, res) => {
 		products = await productManager.getPaginateProducts(1);
 		console.log(products);
 		res.setHeader("Content-Type", "text/html");
-		res.status(200).render("realTimeProducts", { products });
+		res
+			.status(200)
+			.render("realTimeProducts", { products, login: req.session.user });
 	} catch (error) {
 		console.log(error);
 		res.setHeader("Content-Type", "application/json");
@@ -67,7 +70,7 @@ router.get("/carts/:cid", auth, async (req, res) => {
 
 	console.log(cart);
 	res.setHeader("Content-Type", "text/html");
-	return res.status(200).render("carts", { cart });
+	return res.status(200).render("carts", { cart, login: req.session.user });
 });
 
 router.get("/registration", (req, res) => {
@@ -83,5 +86,7 @@ router.get("/login", (req, res) => {
 });
 
 router.get("/profile", auth, (req, res) => {
-	res.status(200).render("profile", { user: req.session.user });
+	res
+		.status(200)
+		.render("profile", { user: req.session.user, login: req.session.user });
 });

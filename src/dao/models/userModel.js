@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema(
 		email: { type: String, require: true, unique: true },
 		age: { type: Number, require: true },
 		password: { type: String, require: true },
-		rol: { type: String },
+		rol: { type: String, default: "user" },
 		cart: {
 			type: mongoose.Types.ObjectId,
 			ref: "carts",
@@ -16,6 +16,7 @@ const userSchema = new mongoose.Schema(
 	},
 	{
 		timestamps: true,
+		strict: false,
 	}
 );
 

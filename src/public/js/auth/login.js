@@ -1,13 +1,13 @@
-/* const loginForm = document.getElementById("login-form");
+const login = document.getElementById("login-form");
 
-loginForm.addEventListener("submit", async (e) => {
+login.addEventListener("submit", async (e) => {
 	e.preventDefault();
 	const email = document.querySelector("input[name='email']").value;
 	const password = document.querySelector("input[name='password']").value;
 
 	try {
 		const response = await fetch("/api/sessions/login", {
-			method: "POST",
+			method: "post",
 			headers: {
 				"Content-Type": "application/json",
 			},
@@ -27,4 +27,3 @@ loginForm.addEventListener("submit", async (e) => {
 		console.error("Error al enviar solicitud de login:", error);
 	}
 });
- */

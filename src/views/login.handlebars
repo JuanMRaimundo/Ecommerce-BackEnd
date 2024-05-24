@@ -2,7 +2,12 @@
 
 	<h2>Iniciar Sesión</h2>
 
-	<form action="/api/sessions/login" method="post" id="login-form">
+	<form
+		onsubmit="login(event)"
+		action="/api/sessions/login"
+		method="post"
+		id="login-form"
+	>
 		{{#if error}}
 			<div class="badge text-bg-danger text-wrap" style="width: 6rem;">
 				{{error}}.
@@ -17,6 +22,7 @@
 		<input type="submit" value="Iniciar Sesión" />
 
 	</form>
+	<a class="nav-link" href="/api/sessions/github">Acceso vía GitHub</a>
 	<a class="nav-link" href="/registration"><button
 			class="btn btn-primary"
 		>Registrarse</button></a>

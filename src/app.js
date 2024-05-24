@@ -12,6 +12,8 @@ import { messageModel } from "./dao/models/messageModel.js";
 import { productModel } from "./dao/models/productModel.js";
 import sessions from "express-session";
 import MongoStore from "connect-mongo";
+import { initPassport } from "./config/passport.config.js";
+import passport from "passport";
 import { redirectToLogin } from "./middleware/redirecting.js";
 
 const PORT = 8080;
@@ -35,6 +37,9 @@ app.use(
 		}),
 	})
 );
+initPassport();
+app.use(passport.initialize());
+app.use(passport.session());
 /* app.use(redirectToLogin); */
 app.engine("handlebars", engine());
 
@@ -136,4 +141,5 @@ io.on("connection", async (socket) => {
 
 //juanmr093
 //SNSportNudos
+//adminCoder123
 //mongodb+srv://juanmr093:SNSportNudos@cluster0.o98kogt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
