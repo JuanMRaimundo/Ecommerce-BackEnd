@@ -2,6 +2,7 @@ import { ProductManagerMongo as ProductManager } from "../dao/ProductManagerMong
 import { Router } from "express";
 import { isValidObjectId } from "mongoose";
 import { productModel } from "../dao/models/productModel.js";
+import { auth } from "../middleware/auth.js";
 
 export const router = Router();
 
@@ -216,7 +217,7 @@ router.put("/:pid", async (req, res) => {
 	}
 });
 
-router.delete("/:pid", async (req, res) => {
+router.delete("/:pid", auth(["user"]), async (req, res) => {
 	let { pid } = req.params;
 	if (!isValidObjectId(pid)) {
 		res.setHeader(`Content-Type`, `aplication/json`);

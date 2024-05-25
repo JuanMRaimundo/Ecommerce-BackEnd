@@ -8,11 +8,11 @@ export const router = Router();
 const productManager = new ProductManager();
 const cartManager = new CartManager();
 
-router.get("/", auth, (req, res) => {
+router.get("/", (req, res) => {
 	res.status(200).render("home", { login: req.session.usuario });
 });
 
-router.get("/home", auth, async (req, res) => {
+router.get("/home", async (req, res) => {
 	let { page } = req.query;
 	let cartId = req.session.user?.cart._id;
 	console.log(req.session);
@@ -27,7 +27,12 @@ router.get("/home", auth, async (req, res) => {
 		prevPage,
 		nextPage,
 	} = await productManager.getPaginateProducts(page);
-
+	console.log("payload:", payload);
+	console.log("totalPages:", totalPages);
+	console.log("hasPrevPage:", hasPrevPage);
+	console.log("hasNextPage:", hasNextPage);
+	console.log("prevPage:", prevPage);
+	console.log("nextPage:", nextPage);
 	res.setHeader(`Content-Type`, `text/html`);
 	res.status(200).render(`home`, {
 		payload,
@@ -41,7 +46,7 @@ router.get("/home", auth, async (req, res) => {
 	});
 });
 
-router.get("/realTimeProducts", auth, async (req, res) => {
+router.get("/realTimeProducts", auth(["user"]), async (req, res) => {
 	let products;
 	try {
 		products = await productManager.getPaginateProducts(1);
@@ -59,12 +64,12 @@ router.get("/realTimeProducts", auth, async (req, res) => {
 	}
 });
 
-router.get("/chat", auth, async (req, res) => {
+router.get("/chat", async (req, res) => {
 	res.setHeader(`Content-Type`, `text/html`);
 	res.status(200).render(`chat`);
 });
 
-router.get("/carts/:cid", auth, async (req, res) => {
+router.get("/carts/:cid", async (req, res) => {
 	let { cid } = req.params;
 	let cart = await cartManager.getCartByIdForCartView({ _id: cid });
 
@@ -85,7 +90,7 @@ router.get("/login", (req, res) => {
 	res.status(200).render("login", { error });
 });
 
-router.get("/profile", auth, (req, res) => {
+router.get("/profile", (req, res) => {
 	res
 		.status(200)
 		.render("profile", { user: req.session.user, login: req.session.user });

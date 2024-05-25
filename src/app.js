@@ -14,7 +14,6 @@ import sessions from "express-session";
 import MongoStore from "connect-mongo";
 import { initPassport } from "./config/passport.config.js";
 import passport from "passport";
-import { redirectToLogin } from "./middleware/redirecting.js";
 
 const PORT = 8080;
 const app = express();
@@ -40,7 +39,6 @@ app.use(
 initPassport();
 app.use(passport.initialize());
 app.use(passport.session());
-/* app.use(redirectToLogin); */
 app.engine("handlebars", engine());
 
 app.set("view engine", "handlebars");

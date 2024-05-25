@@ -66,24 +66,24 @@
 	<nav aria-label="Page navigation example">
 		<ul class="pagination">
 
-			<li class="page-item"><a class="page-link" href="/?page=1">Pág.1</a></li>
+			<li class="page-item"><a class="page-link" href="/home/?page=1">Pág.1</a></li>
 			{{#if hasPrevPage}}
 				<li class="page-item">
-					<a class="page-link" href="/?page={{prevPage}}">Ant.</a>
+					<a class="page-link" href="/home/?page={{prevPage}}">Ant.</a>
 
 				</li>
 
 			{{/if}}
 			{{#if hasNextPage}}
 				<li class="page-item">
-					<a class="page-link" href="/?page={{nextPage}}">Sig.</a>
+					<a class="page-link" href="/home/?page={{nextPage}}">Sig.</a>
 
 				</li>
 
 			{{/if}}
 			<li class="page-item">
 
-				<a class="page-link" href="/?page={{totalPages}}">Última Pág.</a>
+				<a class="page-link" href="/home/?page={{totalPages}}">Última Pág.</a>
 			</li>
 
 		</ul>

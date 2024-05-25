@@ -3,6 +3,7 @@ import { UsersManagerMongo as UsersManager } from "../dao/UsersManagerMongo.js";
 import { generateHash } from "../utils.js";
 import { CartManagerMongo as CartManager } from "../dao/CartManagerMongo.js";
 import passport from "passport";
+import { auth } from "../middleware/auth.js";
 
 export const router = Router();
 
@@ -57,6 +58,7 @@ router.post(
 router.post(
 	"/login",
 	passport.authenticate("login", { failureRedirect: "/api/sessions/error" }),
+	auth(["user"]),
 	async (req, res) => {
 		req.session.user = req.user;
 		res.setHeader("Content-Type", "application/json");
@@ -98,15 +100,22 @@ router.post(
 	} */
 	}
 );
-router.get(`/github`, passport.authenticate("github", {}), (req, res) => {});
+router.get(
+	`/github`,
+	passport.authenticate("github", {}),
+	auth(["user"]),
+	(req, res) => {}
+);
 router.get(
 	"/callbackGithub",
 	passport.authenticate("github", { failureRedirect: "/api/sessions/error" }),
+	auth(["user"]),
 	(req, res) => {
 		req.session.user = req.user;
 		console.log(req.user);
 		res.setHeader("Content-Type", "application/json");
-		return res.status(201).json({ payload: "Login exitoso", user: req.user });
+		/* res.status(201).json({ payload: "Login exitoso", user: req.user }); */
+		return res.redirect("/profile");
 	}
 );
 router.get("/error", (req, res) => {
@@ -127,5 +136,5 @@ router.get("/logout", (req, res) => {
 		}
 	});
 	res.setHeader("Content-Type", "application/json");
-	return res.status(200).json({ payload: `Logout exitoso` });
+	return res.redirect("/login");
 });

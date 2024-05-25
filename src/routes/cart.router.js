@@ -1,6 +1,7 @@
 import { CartManagerMongo as CartManager } from "../dao/CartManagerMongo.js";
 import { Router } from "express";
 import { isValidObjectId } from "mongoose";
+import { auth } from "../middleware/auth.js";
 import { cartsModel } from "../dao/models/cartModel.js";
 
 export const router = Router();
@@ -160,7 +161,7 @@ router.delete("/:cid", async (req, res) => {
 	}
 });
 
-router.delete("/:cid/products/:pid", async (req, res) => {
+router.delete("/:cid/products/:pid", auth(["user"]), async (req, res) => {
 	let { cid, pid } = req.params;
 	if (!isValidObjectId(cid)) {
 		res.setHeader(`Content-Type`, `aplication/json`);
