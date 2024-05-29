@@ -1,19 +1,21 @@
 import express from "express";
 import { engine } from "express-handlebars";
 import { Server } from "socket.io";
-import __dirname from "./utils.js";
+import MongoStore from "connect-mongo";
+import passport from "passport";
 import path from "path";
+import sessions from "express-session";
+import mongoose from "mongoose";
+
 import { router as productRouter } from "./routes/products.router.js";
 import { router as cartRouter } from "./routes/cart.router.js";
 import { router as viewsRouter } from "./routes/views.router.js";
 import { router as sessionsRouter } from "./routes/sessions.router.js";
-import mongoose from "mongoose";
 import { messageModel } from "./dao/models/messageModel.js";
 import { productModel } from "./dao/models/productModel.js";
-import sessions from "express-session";
-import MongoStore from "connect-mongo";
+import __dirname from "./utils.js";
 import { initPassport } from "./config/passport.config.js";
-import passport from "passport";
+import cookieParser from "cookie-parser";
 
 const PORT = 8080;
 const app = express();
@@ -21,8 +23,9 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, `public`)));
+app.use(cookieParser());
 
-app.use(
+/* app.use(
 	sessions({
 		secret: "SNSCoderEC",
 		resave: true,
@@ -35,10 +38,10 @@ app.use(
 			collectionName: "sessionsSNS",
 		}),
 	})
-);
+); */
 initPassport();
 app.use(passport.initialize());
-app.use(passport.session());
+/* app.use(passport.session()); */ //solo si usamos sessions
 app.engine("handlebars", engine());
 
 app.set("view engine", "handlebars");

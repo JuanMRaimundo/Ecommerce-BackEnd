@@ -1,14 +1,42 @@
 import passport from "passport";
+import passportJWT from "passport-jwt";
 import localPassport from "passport-local";
 import githubPassport from "passport-github2";
 import { UsersManagerMongo as UsersManager } from "../dao/UsersManagerMongo.js";
 import { CartManagerMongo as CartManager } from "../dao/CartManagerMongo.js";
-import { generateHash, validationPassword } from "../utils.js";
+import { SECRET, generateHash, validationPassword } from "../utils.js";
 
 const userManager = new UsersManager();
 const cartManager = new CartManager();
 
+const searchToken = (req) => {
+	let token = null;
+	if (req.cookies["SNScookie"]) {
+		token = req.cookies["SNScookie"];
+	}
+
+	return token;
+};
+
 export const initPassport = () => {
+	passport.use(
+		"current",
+		new passportJWT.Strategy(
+			{
+				secretOrKey: SECRET,
+				jwtFromRequest: new passportJWT.ExtractJwt.fromExtractors([
+					searchToken,
+				]),
+			},
+			async (userToken, done) => {
+				try {
+					return done(null, userToken);
+				} catch (error) {
+					return done(error);
+				}
+			}
+		)
+	);
 	passport.use(
 		"github",
 		new githubPassport.Strategy(
@@ -96,6 +124,7 @@ export const initPassport = () => {
 					if (!validationPassword(password, user.password)) {
 						return done(null, false);
 					}
+
 					user = { ...user };
 					delete user.password;
 					return done(null, user);
@@ -105,12 +134,12 @@ export const initPassport = () => {
 			}
 		)
 	);
-
-	passport.serializeUser((user, done) => {
+	//solo si usamos sessions son estos dos métodos
+	/* passport.serializeUser((user, done) => {
 		return done(null, user._id);
 	});
 	passport.deserializeUser(async (id, done) => {
 		let user = await userManager.getUserBy({ _id: id });
 		return done(null, user);
-	});
+	}); */
 };
