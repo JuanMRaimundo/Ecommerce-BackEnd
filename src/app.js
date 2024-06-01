@@ -1,10 +1,10 @@
 import express from "express";
 import { engine } from "express-handlebars";
 import { Server } from "socket.io";
-import MongoStore from "connect-mongo";
+
 import passport from "passport";
 import path from "path";
-import sessions from "express-session";
+//import sessions from "express-session";
 import mongoose from "mongoose";
 
 import { router as productRouter } from "./routes/products.router.js";
@@ -42,6 +42,8 @@ app.use(cookieParser());
 initPassport();
 app.use(passport.initialize());
 /* app.use(passport.session()); */ //solo si usamos sessions
+
+//HANDLEBARS CONFIGURATION
 app.engine("handlebars", engine());
 
 app.set("view engine", "handlebars");
@@ -57,6 +59,7 @@ const serverHTTP = app.listen(PORT, () =>
 
 export const io = new Server(serverHTTP);
 
+//MONGO DB ATLAS CONFIGURATION
 const connDB = async () => {
 	try {
 		await mongoose.connect(
@@ -69,6 +72,8 @@ const connDB = async () => {
 	}
 };
 connDB();
+
+//CHAT CONFIGURATION
 
 let users = []; //array para mostrar en el DOM...
 

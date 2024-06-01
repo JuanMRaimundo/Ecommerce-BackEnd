@@ -32,11 +32,20 @@ main {
 	margin-top: 5px;
 }
 .login {
+	margin-top: 10%;
+}
+.login-form {
 	display: flex;
 	justify-content: center;
 	flex-direction: column;
 	align-items: center;
 	margin-top: 12%;
+	background-color: #f8f9fa;
+	padding: 20px;
+	border-radius: 10px;
+}
+.login-input {
+	margin-bottom: 15px;
 }
 .profile-conteiner {
 	display: flex;
@@ -48,4 +57,26 @@ main {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
+}
+.registration {
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	align-items: center;
+	margin-top: 12%;
+}
+.registration-form {
+	display: flex;
+	flex-direction: column;
+	background-color: #f8f9fa;
+	padding: 20px;
+	border-radius: 10px;
+}
+.registration-input {
+	margin-bottom: 15px;
+}
+.submit-btn {
+	display: block;
+	width: auto;
+	margin: 0 auto;
 }

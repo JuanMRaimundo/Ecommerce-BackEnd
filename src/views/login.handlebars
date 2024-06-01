@@ -1,11 +1,12 @@
-<div class="login">
+<div class="login mb-3 container">
 
-	<h2>Iniciar Sesión</h2>
+	<h2 class="text-center">Iniciar Sesión</h2>
 
 	<form
 		{{! onsubmit="login(event)" }}
 		action="/api/sessions/login"
 		method="post"
+		class="login-form"
 		{{! id="login-form" }}
 	>
 		{{#if error}}
@@ -13,19 +14,50 @@
 				{{error}}.
 			</div>
 		{{/if}}
-		<input type="email" name="email" placeholder="correo electrónico" />
-		<input type="password" name="password" placeholder="contraseña" />
-		<input type="text" name="web" value="web" hidden />
+		<div class="row">
+			<div class="col-md-12">
 
+				<input
+					type="email"
+					name="email"
+					placeholder="correo electrónico"
+					class="login-input form-control"
+				/>
+			</div>
+			<div class="col-md-12">
+
+				<input
+					type="password"
+					name="password"
+					placeholder="contraseña"
+					class="login-input form-control"
+				/>
+			</div>
+			<input type="text" name="web" value="web" hidden />
+		</div>
 		<br />
-
-		<input type="submit" value="Iniciar Sesión" id="btnSubmit" />
+		<input
+			type="submit"
+			value="Iniciar Sesión"
+			id="btnSubmit"
+			class="btn btn-primary submit-btn"
+		/>
 
 	</form>
-	<a class="nav-link" href="/api/sessions/github">Acceso vía GitHub</a>
-	<a class="nav-link" href="/registration"><button
-			class="btn btn-primary"
-		>Registrarse</button></a>
+	<div class="row">
+		<div class="col">
+
+			<a class="nav-link text-center" href="/api/sessions/github">
+				<i class="fab fa-github"></i>Acceso vía GitHub</a>
+		</div>
+		<div class="col">
+
+			<a class="nav-link" href="/registration"><button
+					class="btn btn-primary submit-btn"
+				>Registrarse</button></a>
+		</div>
+
+	</div>
 
 </div>
 

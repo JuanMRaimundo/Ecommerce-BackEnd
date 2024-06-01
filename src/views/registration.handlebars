@@ -1,16 +1,67 @@
-<h2>Registro</h2>
+<div class="registration mb-3 container">
+	<h2 class="text-center">Registro</h2>
 
-<form action="/api/sessions/registration" method="post">
-	<input type="text" name="first_name" placeholder="nombre" />
-	<input type="text" name="last_name" placeholder="apellido" />
-	<input type="email" name="email" placeholder="correo electrónico" />
-	<input type="number" name="age" placeholder="edad" />
-	<input type="password" name="password" placeholder="contraseña" />
+	<form
+		action="/api/sessions/registration"
+		method="post"
+		class="registration-form form-control"
+	>
+		<div class="row">
+			<div class="col-md-6">
+				<input
+					class="registration-input form-control"
+					type="text"
+					name="first_name"
+					placeholder="nombre"
+				/>
 
-	<br />
+			</div>
 
-	<input type="submit" value="Registrarse" />
+			<div class="col-md-6">
+				<input
+					class="registration-input form-control"
+					type="text"
+					name="last_name"
+					placeholder="apellido"
+				/>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				<input
+					class="registration-input form-control"
+					type="email"
+					name="email"
+					placeholder="correo electrónico"
+				/>
+			</div>
+			<div class="col-md-6">
+				<input
+					class="registration-input form-control"
+					type="number"
+					name="age"
+					placeholder="edad"
+				/>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				<input
+					class="registration-input form-control"
+					type="password"
+					name="password"
+					placeholder="contraseña"
+				/>
+			</div>
+		</div>
+		<br />
 
-</form>
+		<input
+			type="submit"
+			value="Registrarse"
+			class="btn btn-primary submit-btn"
+		/>
 
+	</form>
+</div>
 <script src="/js/auth/registration.js"></script>
