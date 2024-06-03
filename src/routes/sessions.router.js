@@ -62,9 +62,8 @@ router.get(
 		failureRedirect: "/api/sessions/error",
 	}),
 	(req, res) => {
-		let { user } = req;
-
 		try {
+			let { user } = req;
 			let token = jwt.sign(user, SECRET, { expiresIn: "1h" });
 			res.cookie("SNScookie", token, { httpOnly: true }); //NO SE ESTA SETEANDO LA COOKIE CON EL TOKEN
 			console.log("user:", user);
@@ -73,8 +72,8 @@ router.get(
 			res.setHeader("Content-Type", "application/json");
 			return res.status(200).json({
 				status: "success",
-				payload: user,
-				token,
+				payload: "Login exitoso.",
+				user: user,
 			});
 		} catch (error) {
 			console.error("Error al generar el token:", error);
@@ -116,3 +115,32 @@ router.get("/logout", (req, res) => {
 	res.setHeader("Content-Type", "application/json");
 	return res.redirect("/login");
 });
+
+router.get(
+	"/current",
+	passport.authenticate("current", {
+		session: false,
+		failureRedirect: "/api/sessions/error",
+	}),
+	(req, res) => {
+		try {
+			if (!req.user) {
+				return res.status(401).json({ message: "User no autenticado" });
+			}
+			let { user } = req;
+			const token = req.cookies["SNScookie"];
+			if (!token) {
+				return res.status(400).json({ message: "Token not found" });
+			}
+			res.cookie("SNScookie", token, { httpOnly: true });
+			console.log("user:", user);
+			res.setHeader("Content-Type", "application/json");
+			return res.status(200).json({ message: "Current user: ", user: user });
+		} catch (error) {
+			return res.status(400).json({
+				message: "Error al mostrar el current user: ",
+				error: error.message,
+			});
+		}
+	}
+);
