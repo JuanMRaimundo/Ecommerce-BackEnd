@@ -4,7 +4,6 @@ import { Server } from "socket.io";
 
 import passport from "passport";
 import path from "path";
-//import sessions from "express-session";
 import mongoose from "mongoose";
 
 import { router as productRouter } from "./routes/products.router.js";
@@ -16,32 +15,17 @@ import { productModel } from "./dao/models/productModel.js";
 import __dirname from "./utils.js";
 import { initPassport } from "./config/passport.config.js";
 import cookieParser from "cookie-parser";
+import { config } from "./config/config.js";
 
-const PORT = 8080;
+const PORT = config.PORT;
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, `public`)));
 app.use(cookieParser());
-
-/* app.use(
-	sessions({
-		secret: "SNSCoderEC",
-		resave: true,
-		saveUninitialized: true,
-		store: MongoStore.create({
-			ttl: 3600,
-			mongoUrl:
-				"mongodb+srv://juanmr093:SNSportNudos@cluster0.o98kogt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
-			dbName: "SNSport-EC",
-			collectionName: "sessionsSNS",
-		}),
-	})
-); */
 initPassport();
 app.use(passport.initialize());
-/* app.use(passport.session()); */ //solo si usamos sessions
 
 //HANDLEBARS CONFIGURATION
 app.engine("handlebars", engine());
@@ -62,10 +46,7 @@ export const io = new Server(serverHTTP);
 //MONGO DB ATLAS CONFIGURATION
 const connDB = async () => {
 	try {
-		await mongoose.connect(
-			"mongodb+srv://juanmr093:SNSportNudos@cluster0.o98kogt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
-			{ dbName: "SNSport-EC" }
-		);
+		await mongoose.connect(config.MONGO_URL, { dbName: config.DB_NAME });
 		console.log("DB SNSport online!");
 	} catch (error) {
 		console.log("Error al conectar a la DB", error.message);

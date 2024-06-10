@@ -1,0 +1,178 @@
+import { CartsMongoDAO as CartsDAO } from "../dao/CartsMongoDAO.js";
+import { isValidObjectId } from "mongoose";
+
+const cartsDAO = new CartsDAO();
+
+export class CartsController {
+	static getCarts = async (req, res) => {
+		try {
+			let carts = await cartsDAO.getCarts();
+			res.setHeader("Content-Type", "application/json");
+			return res.status(200).json({ carts });
+		} catch (error) {
+			console.log(error);
+			res.setHeader("Content-Type", "application/json");
+			return res.status(500).json({
+				error: `Error inesperado en el servidor - Intente más tarde`,
+			});
+		}
+	};
+	static getCartById = async (req, res) => {
+		let { cid } = req.params;
+
+		if (!isValidObjectId(cid)) {
+			res.setHeader(`Content-Type`, `aplication/json`);
+			return res.status(400).json({
+				error: `Ingrese un id valido de MongoDB como argumento para su busqueda`,
+			});
+		}
+		try {
+			let cart = await cartsDAO.getCartById({ _id: cid });
+			res.setHeader("Content-Type", "application/json");
+			return res.status(200).json({ cart });
+		} catch (error) {
+			console.log(error);
+			res.setHeader("Content-Type", "application/json");
+			return res.status(500).json({
+				error: `Error inesperado en el servidor - Intente más tarde, o contacte a su administrador`,
+				detalle: `${error.message}`,
+			});
+		}
+	};
+	static createCart = async (req, res) => {
+		const newCart = await cartsDAO.createCart();
+		return res.json({ payload: newCart });
+	};
+	static addProductToCart = async (req, res) => {
+		let { cid, pid } = req.params;
+		if (!isValidObjectId(cid) || !isValidObjectId(pid)) {
+			return res.status(400).json({
+				error: `Ingrese un id valido de MongoDB como argumento para su petición`,
+			});
+		}
+		try {
+			await cartsDAO.addToCart(cid, pid);
+			let cartUpdated = await cartsDAO.getCartById(cid);
+			res.json({ payload: cartUpdated });
+		} catch (error) {
+			res.setHeader("Content-Type", "application/json");
+			return res.status(300).json({
+				error: `Error al agregar productos al carrito`,
+				detalle: `${error.message}`,
+			});
+		}
+	};
+	static editCart = async (req, res) => {
+		//PARA ACTUALIZAR UN CARRITO
+		let { cid } = req.params;
+		let { pid, quantity } = req.body;
+		console.log("este es el cid" + cid);
+		console.log("este es el Pid" + pid);
+		console.log("este es el quiantity" + quantity);
+
+		if (!isValidObjectId(cid) || !isValidObjectId(pid)) {
+			return res.status(400).json({
+				error: `Ingrese un id válido de MongoDB como argumento para su petición`,
+			});
+		}
+		if (!quantity || isNaN(quantity) || parseInt(quantity) <= 0) {
+			return res.status(400).json({
+				error: `Ingrese una cantidad válida para actualizar el producto en el carrito`,
+			});
+		}
+		try {
+			await cartsDAO.upDateCart(cid, pid, parseInt(quantity));
+			let updatedCart = await cartsDAO.getCartById(cid);
+			console.log("el carrito actualizado:" + updatedCart);
+			res.json({ payload: updatedCart });
+		} catch (error) {
+			res.setHeader("Content-Type", "application/json");
+			return res.status(500).json({
+				error: `Error inesperado en el servidor al actualizar el carrito - Intente más tarde`,
+				detalle: `${error.message}`,
+			});
+		}
+	};
+	static editQuantityCart = async (req, res) => {
+		//EDITAR QUANTITY DE PRODUCTOS
+		let { cid, pid } = req.params;
+		let { quantity } = req.body;
+		console.log("este es el cid" + cid);
+		console.log("este es el Pid" + pid);
+		console.log("este es el quiantity" + quantity);
+
+		if (!isValidObjectId(cid)) {
+			res.setHeader(`Content-Type`, `aplication/json`);
+			return res.status(400).json({
+				error: `Ingrese un id valido de MongoDB como argumento para su petición`,
+			});
+		}
+		if (!quantity || isNaN(quantity) || parseInt(quantity) <= 0) {
+			return res.status(400).json({
+				error: `Ingrese una cantidad válida para actualizar la cantidad del producto en el carrito`,
+			});
+		}
+		try {
+			let updatedProduct = await cartsDAO.upDateQuantityCart(
+				cid,
+				pid,
+				quantity
+			);
+			console.log(updatedProduct);
+			res.json({
+				message: "Cantidad actualizada correctamente",
+				cart: updatedProduct,
+			});
+		} catch (error) {
+			res.setHeader(`Content-Type`, `aplication/json`);
+			return res.status(500).json({
+				error: `Error inesperado en el servidor, intente más tarde`,
+				detail: `${error.message}`,
+			});
+		}
+	};
+	static deleteEveryProducts = async (req, res) => {
+		let { cid } = req.params;
+		if (!isValidObjectId(cid)) {
+			res.setHeader(`Content-Type`, `aplication/json`);
+			return res.status(400).json({
+				error: `Ingrese un id valido de MongoDB como argumento para su petición`,
+			});
+		}
+		try {
+			let deleteProductsCart = await cartsDAO.deleteEveryProducts(cid);
+			res.json({
+				message: "Productos eliminados del carrito",
+				cart: deleteProductsCart,
+			});
+		} catch (error) {
+			res.setHeader(`Content-Type`, `aplication/json`);
+			return res.status(500).json({
+				error: `Error inesperado en el servidor, intente más tarde`,
+				detail: `${error.message}`,
+			});
+		}
+	};
+	static deleteAProductOfCart = async (req, res) => {
+		let { cid, pid } = req.params;
+		if (!isValidObjectId(cid)) {
+			res.setHeader(`Content-Type`, `aplication/json`);
+			return res.status(400).json({
+				error: `Ingrese un id valido de MongoDB como argumento para su petición`,
+			});
+		}
+		try {
+			let updatedCart = await cartsDAO.deleteProduct(cid, pid);
+			res.json({
+				message: "Producto eliminado del carrito",
+				cart: updatedCart,
+			});
+		} catch (error) {
+			res.setHeader(`Content-Type`, `aplication/json`);
+			return res.status(500).json({
+				error: `Error inesperado en el servidor, intente más tarde`,
+				detail: `${error.message}`,
+			});
+		}
+	};
+}

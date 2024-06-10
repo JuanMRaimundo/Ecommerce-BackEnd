@@ -4,7 +4,8 @@ import localPassport from "passport-local";
 import githubPassport from "passport-github2";
 import { UsersManagerMongo as UsersManager } from "../dao/UsersManagerMongo.js";
 import { CartManagerMongo as CartManager } from "../dao/CartManagerMongo.js";
-import { SECRET, generateHash, validationPassword } from "../utils.js";
+import { generateHash, validationPassword } from "../utils.js";
+import { config } from "./config.js";
 
 const userManager = new UsersManager();
 const cartManager = new CartManager();
@@ -23,7 +24,7 @@ export const initPassport = () => {
 		"current",
 		new passportJWT.Strategy(
 			{
-				secretOrKey: SECRET,
+				secretOrKey: config.SECRET,
 				jwtFromRequest: new passportJWT.ExtractJwt.fromExtractors([
 					searchToken,
 				]),
@@ -41,8 +42,8 @@ export const initPassport = () => {
 		"github",
 		new githubPassport.Strategy(
 			{
-				clientID: "Iv23liT6wosTIo3MCRXM",
-				clientSecret: "baa59152e1c0743a54708b4576cb3c9f4a202df8",
+				clientID: config.CLIENT_ID_GITHUB,
+				clientSecret: config.CLIENT_SECRET_GITHUB,
 				callbackURL: "http://localhost:8080/api/sessions/callbackGithub",
 			},
 			async (ta, tr, profile, done) => {
