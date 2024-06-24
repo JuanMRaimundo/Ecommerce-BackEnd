@@ -130,3 +130,8 @@ io.on("connection", async (socket) => {
 //SNSportNudos
 //adminCoder123
 //mongodb+srv://juanmr093:SNSportNudos@cluster0.o98kogt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+//contra aplicacion google E-Commerce-SNS
+//xfrg wzxc hqmv pbzp
+
+//admin : patriciaJ@test.com
+//contra: 1234

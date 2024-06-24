@@ -1,6 +1,7 @@
 import { Router } from "express";
 import passport from "passport";
 import { ViewsController } from "../controllers/ViewsController.js";
+import { authRole } from "../middleware/auth.js";
 
 export const router = Router();
 
@@ -19,7 +20,11 @@ router.get(
 );
 router.get(
 	"/chat",
-	passport.authenticate("current", { session: false }),
+	passport.authenticate("current", {
+		session: false,
+		failureRedirect: "/api/sessions/error",
+	}),
+	authRole(["user"]),
 	ViewsController.chatView
 );
 router.get(

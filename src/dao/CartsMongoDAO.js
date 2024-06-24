@@ -1,5 +1,6 @@
 import { cartsModel } from "./models/cartModel.js";
 import mongoose from "mongoose";
+import { ticektModel } from "./models/ticketModel.js";
 
 export class CartsMongoDAO {
 	async generateId() {
@@ -134,5 +135,8 @@ export class CartsMongoDAO {
 			console.error(error);
 			console.error("Error al eliminar el producto del carrito");
 		}
+	}
+	async createPurchase(cid) {
+		return await ticektModel.create(cid);
 	}
 }

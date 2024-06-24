@@ -1,3 +1,5 @@
+import { userModel } from "./models/userModel.js";
+
 export class UsersMongoDAO {
 	async getUsers() {
 		return await userModel.find();

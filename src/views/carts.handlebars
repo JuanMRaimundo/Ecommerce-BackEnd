@@ -28,7 +28,17 @@
 			class="nav-link active"
 			href="/home"
 		>Seguir comprando</a></button>
-
 </spam>
+<div class="container mt-3">
+    <div class="row justify-content-center">
+        <div class="col-auto">
+            <form id="purchaseForm">
+				<input type="hidden" id="cartId" name="cartId" value="{{cart._id}}">
+                <button type="submit" class="btn btn-success">Finalizar compra</button>
+            </form>
+        </div>
+    </div>
+</div>
+
 
 <script src="/js/carts.js"></script>

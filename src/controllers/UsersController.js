@@ -1,10 +1,24 @@
 import jwt from "jsonwebtoken";
 import { config } from "../config/config.js";
+import { UsersDTO } from "../dto/UsersDTO.js";
+import { sendMail } from "../utils.js";
 
 export class UsersController {
 	static registration = async (req, res) => {
+		let userMail;
 		try {
+			userMail = req.body;
 			res.setHeader("Content-Type", "application/json");
+			let registroOk = await sendMail(
+				userMail.email,
+				"¡Registro exitoso!",
+				`<h2>Bienvenido/a a SNSports!</h2><br><br>
+					<p>Usuario registrado con email:${userMail.email}</p>
+				`
+			);
+			if (registroOk.accepted.length > 0) {
+				console.log("Email enviado-Usuario registrado");
+			}
 			return res
 				.status(201)
 				.json({ payload: "Registro exitoso", newUser: req.user });
@@ -35,17 +49,16 @@ export class UsersController {
 	static callBackGitHub = async (req, res) => {
 		try {
 			let { user } = req;
-			let token = jwt.sign(user, config.SECRET, { expiresIn: "1h" });
-			res.cookie("SNScookie", token, { httpOnly: true }); //NO SE ESTA SETEANDO LA COOKIE CON EL TOKEN
-			console.log("user:", user);
-			/* res.redirect("/home"); */ //NO ESTOY PUDIENDO REDIRIGIR AL HOME LUEGO DE INICIAR CON GITHUB
-
-			res.setHeader("Content-Type", "application/json");
-			return res.status(200).json({
-				status: "success",
-				payload: "Login exitoso.",
-				user: user,
+			let tokenPayload = {
+				id: user._id,
+				role: user.rol,
+				cart: user.cart,
+			};
+			let token = jwt.sign(tokenPayload, config.SECRET, {
+				expiresIn: "1h",
 			});
+			res.cookie("SNScookie", token, { httpOnly: true });
+			res.redirect("/home");
 		} catch (error) {
 			console.error("Error al generar el token:", error);
 			res.status(500).json({ error: "Error interno del servidor" });
@@ -62,9 +75,9 @@ export class UsersController {
 				return res.status(400).json({ message: "Token not found" });
 			}
 			res.cookie("SNScookie", token, { httpOnly: true });
-			console.log("user:", user);
+			let userDTO = new UsersDTO(user);
 			res.setHeader("Content-Type", "application/json");
-			return res.status(200).json({ message: "Current user: ", user: user });
+			return res.status(200).json({ message: "Current user: ", user: userDTO });
 		} catch (error) {
 			return res.status(400).json({
 				message: "Error al mostrar el current user: ",

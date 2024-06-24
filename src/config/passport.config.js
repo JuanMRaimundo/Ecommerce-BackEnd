@@ -62,8 +62,14 @@ export const initPassport = () => {
 							email,
 							profile,
 							cart: newCart._id,
+							rol: "user", //Pongo rol por defecto porque no me aparece el rol al iniciar sesion con GitHub
 						});
 						user = await userManager.getUserByPopulate({ email });
+					}
+					if (!user.cart) {
+						let newCart = await cartManager.createCart();
+						user.cart = newCart._id;
+						await userManager.updateUser(user._id, { cart: newCart._id });
 					}
 					return done(null, user);
 				} catch (error) {
@@ -81,7 +87,7 @@ export const initPassport = () => {
 			},
 			async (req, username, password, done) => {
 				try {
-					let { first_name, last_name, age } = req.body;
+					let { first_name, last_name, age, rol } = req.body;
 					if ((!first_name, !last_name, !age)) {
 						return done(null, false);
 					}
@@ -99,6 +105,7 @@ export const initPassport = () => {
 						email: username,
 						age,
 						password,
+						rol,
 						cart: newCart._id,
 					});
 

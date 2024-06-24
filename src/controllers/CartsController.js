@@ -1,5 +1,7 @@
 import { CartsMongoDAO as CartsDAO } from "../dao/CartsMongoDAO.js";
 import { isValidObjectId } from "mongoose";
+import { TicketService } from "../repository/ticket.service.js";
+import { sendMail } from "../utils.js";
 
 const cartsDAO = new CartsDAO();
 
@@ -172,6 +174,41 @@ export class CartsController {
 			return res.status(500).json({
 				error: `Error inesperado en el servidor, intente más tarde`,
 				detail: `${error.message}`,
+			});
+		}
+	};
+
+	static newPurchase = async (req, res) => {
+		let { cid } = req.params;
+		let userId = req.user._id;
+		if (!isValidObjectId(cid)) {
+			return res.status(400).json({
+				error: `El id:${cid}, no es un id válido`,
+			});
+		}
+		try {
+			const newTicket = await TicketService.createTicketFromCart(cid, userId);
+			let ticketEnviado = await sendMail(
+				newTicket.purchaser,
+				"¡Compra exitosa!",
+				`
+				<h2>Gracias por comprar en SNSports</h2><br><br>
+				<p>Tu nro de compra es: ${newTicket.code} por un monto de $${newTicket.amount}</p><br>
+				<p>Ante cualquier duda comunicate con nosotros</p><br><br>
+				`
+			);
+			if (ticketEnviado.accepted.length > 0) {
+				console.log("Registro de compra-Ticket enviado");
+			}
+			res
+				.status(201)
+				.json({ message: "Compra realizada con éxito", ticket: newTicket });
+		} catch (error) {
+			res.setHeader("Content-Type", "application/json");
+			console.log(`Error al crear ticket: ${error}`);
+			return res.status(300).json({
+				error: `Error al crear nuevo Ticket`,
+				detalle: `${error.message}`,
 			});
 		}
 	};
