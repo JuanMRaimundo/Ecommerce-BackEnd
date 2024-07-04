@@ -5,6 +5,10 @@
 import { ProductsMongoDAO as ProductsDAO } from "../dao/ProductsMongoDAO.js";
 import { productModel } from "../dao/models/productModel.js";
 import { isValidObjectId } from "mongoose";
+import { fakerES_MX as faker } from "@faker-js/faker";
+import { CustomError } from "../utils/CustomError.js";
+import { productErrorInfo } from "../utils/errors-types.js";
+import { ERROR_TYPES } from "../utils/Enum-error.js";
 
 const productDAO = new ProductsDAO();
 
@@ -114,41 +118,43 @@ export class ProductsController {
 			});
 		}
 	};
-	static createProduct = async (req, res) => {
+	static createProduct = async (req, res, next) => {
 		console.log("Datos del cuerpo de la solicitud:", req.body);
 		let { title, code, description, price, status, stock, category } = req.body;
 
-		if (
-			!title ||
-			!code ||
-			!description ||
-			!price ||
-			!status ||
-			!stock ||
-			!category
-		) {
-			res.setHeader(`Content-Type`, `aplication/json`);
-			return res
-				.status(400)
-				.json({ error: `Los campos a completar son obligatorios` });
-		}
-		let exist;
 		try {
-			exist = await productDAO.getProductBy({ code });
-		} catch (error) {
-			res.setHeader(`Content-Type`, `aplication/json`);
-			return res.status(500).json({
-				error: `Error inesperado en el servidor - Intente más tarde, o contacte a su administrador`,
-				detail: `${error.message}`,
-			});
-		}
-		if (exist.length > 0) {
-			res.setHeader("Content-Type", "application/json");
-			return res.status(400).json({
-				error: `El producto con código ${code} ya existe en la Base de Datos`,
-			});
-		}
-		try {
+			if (
+				!title ||
+				!code ||
+				!description ||
+				!price ||
+				!status ||
+				!stock ||
+				!category
+			) {
+				throw CustomError.createProductError(
+					"Product creation error",
+					productErrorInfo({
+						title,
+						code,
+						description,
+						price,
+						status,
+						stock,
+						category,
+					}),
+					"Error al tratar de crear un producto",
+					ERROR_TYPES.INVALID_ARGUMENTS
+				);
+			}
+
+			let exist = await productDAO.getProductBy({ code });
+			if (exist.length > 0) {
+				return res.status(400).json({
+					error: `El producto con código ${code} ya existe en la Base de Datos`,
+				});
+			}
+
 			let newProduct = await productDAO.addProduct({
 				title,
 				code,
@@ -158,13 +164,12 @@ export class ProductsController {
 				stock,
 				category,
 			});
-			res.setHeader("Content-Type", "application/json");
 			return res.status(201).json({ payload: newProduct });
 		} catch (error) {
-			res.setHeader(`Content-Type`, `aplication/json`);
-			return res.status(500).json({
-				error: `Error inesperado en el servidor - Intente más tarde, o contacte a su administrador`,
-				detail: `${error.message}`,
+			console.log("Hubo un error al crear productos:", error.message);
+			return res.status(error.code || 500).json({
+				error: error.message,
+				detail: error.cause || "No se pudo determinar la causa del error",
 			});
 		}
 	};
@@ -235,6 +240,35 @@ export class ProductsController {
 					.status(404)
 					.json({ error: `El producto con id ${pid} no existe` });
 			}
+		} catch (error) {
+			res.setHeader(`Content-Type`, `aplication/json`);
+			return res.status(500).json({
+				error: `Error inesperado en el servidor, intente más tarde`,
+				detail: `${error.message}`,
+			});
+		}
+	};
+	static mockingProducts = async (req, res) => {
+		try {
+			let products = [];
+			for (let i = 0; i < 100; i++) {
+				const product = {
+					id: faker.database.mongodbObjectId,
+					title: faker.commerce.productName(),
+					code: faker.helpers.replaceSymbols("#?*#?*"),
+					description: faker.commerce.productDescription(),
+					price: faker.commerce.price({
+						min: 29999,
+						max: 99999,
+						dec: 0,
+						symbol: "$",
+					}),
+					status: faker.datatype.boolean(),
+					stock: faker.helpers.replaceSymbols("##"),
+				};
+				products.push(product);
+			}
+			return res.status(200).json({ products });
 		} catch (error) {
 			res.setHeader(`Content-Type`, `aplication/json`);
 			return res.status(500).json({

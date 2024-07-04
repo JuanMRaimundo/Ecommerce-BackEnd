@@ -16,6 +16,7 @@ import __dirname from "./utils.js";
 import { initPassport } from "./config/passport.config.js";
 import cookieParser from "cookie-parser";
 import { config } from "./config/config.js";
+import { errorHandler } from "./middleware/errorHandler.js";
 
 const PORT = config.PORT;
 const app = express();
@@ -37,6 +38,7 @@ app.use("/api/carts", cartRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/", viewsRouter);
 
+app.use(errorHandler);
 const serverHTTP = app.listen(PORT, () =>
 	console.log(`Server online en puerto ${PORT}`)
 );

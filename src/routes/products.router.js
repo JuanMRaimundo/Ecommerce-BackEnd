@@ -6,6 +6,7 @@ import passport from "passport";
 export const router = Router();
 
 router.get("/", ProductsController.getLimitedProducts);
+router.get("/mockingproducts", ProductsController.mockingProducts);
 router.get("/category/:category", ProductsController.getProductsByCategory);
 router.get("/stock/:maxStock", ProductsController.getProductsbyStock);
 router.get("/price/:sort", ProductsController.getProductsSortedbyPrice);

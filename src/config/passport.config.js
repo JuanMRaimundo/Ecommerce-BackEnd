@@ -6,6 +6,9 @@ import { UsersManagerMongo as UsersManager } from "../dao/UsersManagerMongo.js";
 import { CartManagerMongo as CartManager } from "../dao/CartManagerMongo.js";
 import { generateHash, validationPassword } from "../utils.js";
 import { config } from "./config.js";
+import { CustomError } from "../utils/CustomError.js";
+import { userErrorInfo } from "../utils/errors-types.js";
+import { ERROR_TYPES } from "../utils/Enum-error.js";
 
 const userManager = new UsersManager();
 const cartManager = new CartManager();
@@ -89,6 +92,12 @@ export const initPassport = () => {
 				try {
 					let { first_name, last_name, age, rol } = req.body;
 					if ((!first_name, !last_name, !age)) {
+						/* CustomError.createUserError({
+							name: "User creation error",
+							cause: userErrorInfo({ first_name, last_name, age, rol }),
+							message: "Error trying to create an user",
+							code: ERROR_TYPES.INVALID_ARGUMENTS,
+						}); */
 						return done(null, false);
 					}
 					let exist = await userManager.getUserBy({ email: username });
