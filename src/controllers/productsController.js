@@ -1,7 +1,3 @@
-//pasar lógica de las rutas aqui
-//agregar el cart y chat
-//fetch a la ruta de agregar de a un producto
-// Define la URL a la que deseas enviar la solicitud (cambia esto por tu URL real)
 import { ProductsMongoDAO as ProductsDAO } from "../dao/ProductsMongoDAO.js";
 import { productModel } from "../dao/models/productModel.js";
 import { isValidObjectId } from "mongoose";
@@ -27,7 +23,9 @@ export class ProductsController {
 				return res.status(200).json({ products });
 			}
 		} catch (error) {
-			console.log(error);
+			req.logger.error(
+				"Error al consultar por productos con límites:" + "Error:" + error.stack
+			);
 			res.setHeader("Content-Type", "application/json");
 			return res.status(500).json({
 				error: `Error inesperado en el servidor - Intente más tarde`,
@@ -45,6 +43,11 @@ export class ProductsController {
 				res.json({ error: `El producto ${title} no existe` });
 			}
 		} catch (error) {
+			req.logger.error(
+				"Error al consultar por productos por categoría:" +
+					"Error:" +
+					error.stack
+			);
 			res.setHeader("Content-Type", "application/json");
 			return res.status(500).json({
 				error: `Error inesperado en el servidor - Intente más tarde`,
@@ -66,6 +69,9 @@ export class ProductsController {
 				});
 			}
 		} catch (error) {
+			req.logger.error(
+				"Error al consultar por productos por stock:" + "Error:" + error.stack
+			);
 			res.setHeader("Content-Type", "application/json");
 			return res.status(500).json({
 				error: `Error inesperado en el servidor - Intente más tarde`,
@@ -79,6 +85,9 @@ export class ProductsController {
 			res.setHeader("Content-Type", "application/json");
 			return res.status(200).json({ payload: payload });
 		} catch (error) {
+			req.logger.error(
+				"Error al consultar por productos por precio:" + "Error:" + error.stack
+			);
 			res.setHeader("Content-Type", "application/json");
 			return res.status(500).json({
 				error: `Error inesperado en el servidor al ordenar productos por precio - Intente más tarde`,
@@ -110,7 +119,9 @@ export class ProductsController {
 			res.setHeader("Content-Type", "application/json");
 			return res.status(200).json({ product });
 		} catch (error) {
-			console.log(error);
+			req.logger.error(
+				"Error al consultar por productos por ID:" + "Error:" + error.stack
+			);
 			res.setHeader("Content-Type", "application/json");
 			return res.status(500).json({
 				error: `Error inesperado en el servidor - Intente más tarde, o contacte a su administrador`,
@@ -119,7 +130,7 @@ export class ProductsController {
 		}
 	};
 	static createProduct = async (req, res, next) => {
-		console.log("Datos del cuerpo de la solicitud:", req.body);
+		req.logger.info("Datos del cuerpo de la solicitud:", req.body);
 		let { title, code, description, price, status, stock, category } = req.body;
 
 		try {
@@ -166,7 +177,7 @@ export class ProductsController {
 			});
 			return res.status(201).json({ payload: newProduct });
 		} catch (error) {
-			console.log("Hubo un error al crear productos:", error.message);
+			req.logger.error("Error al crear un producto." + "Error:" + error.stack);
 			return res.status(error.code || 500).json({
 				error: error.message,
 				detail: error.cause || "No se pudo determinar la causa del error",

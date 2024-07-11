@@ -11,9 +11,8 @@ export class ViewsController {
 		let { page } = req.query;
 		let token = req.cookies["SNScookie"];
 		let user = jwt.verify(token, config.SECRET);
-		console.log(user);
 		let cartId = user.cart._id;
-		console.log(cartId);
+		req.logger.info("Usuario:" + user + "Id del carrito:" + cartId);
 		if (!page) page = 1;
 		let {
 			docs: payload,
@@ -80,7 +79,9 @@ export class ViewsController {
 				.status(200)
 				.render("carts", { cart, user: req.cookies["SNScookie"]?.user });
 		} catch (error) {
-			console.error(error);
+			req.logger.error(
+				"Error al cargar vista del carrito" + "Error:" + error.stack
+			);
 			res.setHeader("Content-Type", "application/json");
 			return res.status(500).json({
 				status: "error",
@@ -94,7 +95,7 @@ export class ViewsController {
 		try {
 			let token = req.cookies["SNScookie"];
 			let user = jwt.verify(token, config.SECRET);
-			console.log(user);
+			req.logger.info("Vista del usuario:" + user);
 			res.status(200).render("profile", { user });
 		} catch (error) {
 			res.setHeader("Content-Type", "application/json");

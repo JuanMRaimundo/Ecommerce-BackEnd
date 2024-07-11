@@ -10,6 +10,7 @@ import { router as productRouter } from "./routes/products.router.js";
 import { router as cartRouter } from "./routes/cart.router.js";
 import { router as viewsRouter } from "./routes/views.router.js";
 import { router as sessionsRouter } from "./routes/sessions.router.js";
+import { router as loggerRouter } from "./routes/logger.router.js";
 import { messageModel } from "./dao/models/messageModel.js";
 import { productModel } from "./dao/models/productModel.js";
 import __dirname from "./utils.js";
@@ -17,11 +18,13 @@ import { initPassport } from "./config/passport.config.js";
 import cookieParser from "cookie-parser";
 import { config } from "./config/config.js";
 import { errorHandler } from "./middleware/errorHandler.js";
+import { middLogger } from "./utils/loggerUtil.js";
 
 const PORT = config.PORT;
 const app = express();
 
 app.use(express.json());
+app.use(middLogger);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, `public`)));
 app.use(cookieParser());
@@ -37,6 +40,7 @@ app.use("/api/products", productRouter);
 app.use("/api/carts", cartRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/", viewsRouter);
+app.use("/", loggerRouter);
 
 app.use(errorHandler);
 const serverHTTP = app.listen(PORT, () =>

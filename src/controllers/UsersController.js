@@ -17,12 +17,13 @@ export class UsersController {
 				`
 			);
 			if (registroOk.accepted.length > 0) {
-				console.log("Email enviado-Usuario registrado");
+				req.logger.info("Email enviado-Usuario registrado");
 			}
 			return res
 				.status(201)
 				.json({ payload: "Registro exitoso", newUser: req.user });
 		} catch (error) {
+			req.logger.error("Error durante el registro" + "error:" + error.stack);
 			return res.status(400).json("Error al registrarse: ", error.message);
 		}
 	};
@@ -31,20 +32,13 @@ export class UsersController {
 
 		try {
 			let token = jwt.sign(user, config.SECRET, { expiresIn: "1h" });
-			console.log("Datos recibidos:", user);
+			req.logger.info("Datos recibidos:", user);
 			res.cookie("SNScookie", token, { httpOnly: true });
 			res.redirect("/home");
-			/* res.setHeader("Content-Type", "application/json"); */
 		} catch (error) {
+			req.logger.error("Error al iniciar sesion");
 			return res.status(400).json("Error al iniciar sesion: ", error.message);
 		}
-		/* return res.status(201).json({
-			status: `succes`,
-			payload: `Login exitoso`,
-			user: user,
-			token,
-		}); */
-		/* return res.redirect("/profile"); */
 	};
 	static callBackGitHub = async (req, res) => {
 		try {
@@ -60,7 +54,7 @@ export class UsersController {
 			res.cookie("SNScookie", token, { httpOnly: true });
 			res.redirect("/home");
 		} catch (error) {
-			console.error("Error al generar el token:", error);
+			req.logger.error("Error al generar el token:", error);
 			res.status(500).json({ error: "Error interno del servidor" });
 		}
 	};
@@ -87,6 +81,7 @@ export class UsersController {
 	};
 	static errorRoute = (req, res) => {
 		res.setHeader("Content-Type", "application/json");
+		req.logger.error("Error de la operación de autenticación");
 		return res
 			.status(500)
 			.json({ error: `Error en la operación de autenticación` });

@@ -12,7 +12,9 @@ export class CartsController {
 			res.setHeader("Content-Type", "application/json");
 			return res.status(200).json({ carts });
 		} catch (error) {
-			console.log(error);
+			req.logger.error(
+				"Error al consultar por los carritos." + "Error:" + error.stack
+			);
 			res.setHeader("Content-Type", "application/json");
 			return res.status(500).json({
 				error: `Error inesperado en el servidor - Intente más tarde`,
@@ -33,7 +35,9 @@ export class CartsController {
 			res.setHeader("Content-Type", "application/json");
 			return res.status(200).json({ cart });
 		} catch (error) {
-			console.log(error);
+			req.logger.error(
+				"Error al consultar por el ID de un carrito." + "Error:" + error.stack
+			);
 			res.setHeader("Content-Type", "application/json");
 			return res.status(500).json({
 				error: `Error inesperado en el servidor - Intente más tarde, o contacte a su administrador`,
@@ -68,10 +72,15 @@ export class CartsController {
 		//PARA ACTUALIZAR UN CARRITO
 		let { cid } = req.params;
 		let { pid, quantity } = req.body;
-		console.log("este es el cid" + cid);
-		console.log("este es el Pid" + pid);
-		console.log("este es el quiantity" + quantity);
-
+		req.logger.info(
+			"Esta es la info de la req.:" +
+				"CID:" +
+				cid +
+				"PID" +
+				pid +
+				"Quantity" +
+				quantity
+		);
 		if (!isValidObjectId(cid) || !isValidObjectId(pid)) {
 			return res.status(400).json({
 				error: `Ingrese un id válido de MongoDB como argumento para su petición`,
@@ -85,7 +94,7 @@ export class CartsController {
 		try {
 			await cartsDAO.upDateCart(cid, pid, parseInt(quantity));
 			let updatedCart = await cartsDAO.getCartById(cid);
-			console.log("el carrito actualizado:" + updatedCart);
+			req.logger.info("El carrito actualizado es:" + updatedCart);
 			res.json({ payload: updatedCart });
 		} catch (error) {
 			res.setHeader("Content-Type", "application/json");
@@ -99,10 +108,6 @@ export class CartsController {
 		//EDITAR QUANTITY DE PRODUCTOS
 		let { cid, pid } = req.params;
 		let { quantity } = req.body;
-		console.log("este es el cid" + cid);
-		console.log("este es el Pid" + pid);
-		console.log("este es el quiantity" + quantity);
-
 		if (!isValidObjectId(cid)) {
 			res.setHeader(`Content-Type`, `aplication/json`);
 			return res.status(400).json({
@@ -120,7 +125,6 @@ export class CartsController {
 				pid,
 				quantity
 			);
-			console.log(updatedProduct);
 			res.json({
 				message: "Cantidad actualizada correctamente",
 				cart: updatedProduct,
@@ -205,7 +209,7 @@ export class CartsController {
 				.json({ message: "Compra realizada con éxito", ticket: newTicket });
 		} catch (error) {
 			res.setHeader("Content-Type", "application/json");
-			console.log(`Error al crear ticket: ${error}`);
+			req.logger.error("Error al crear un ticket." + "Error:" + error.stack);
 			return res.status(300).json({
 				error: `Error al crear nuevo Ticket`,
 				detalle: `${error.message}`,
