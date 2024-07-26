@@ -11,6 +11,7 @@ import { router as cartRouter } from "./routes/cart.router.js";
 import { router as viewsRouter } from "./routes/views.router.js";
 import { router as sessionsRouter } from "./routes/sessions.router.js";
 import { router as loggerRouter } from "./routes/logger.router.js";
+import { router as usersRouter } from "./routes/users.router.js";
 import { messageModel } from "./dao/models/messageModel.js";
 import { productModel } from "./dao/models/productModel.js";
 import __dirname from "./utils.js";
@@ -39,6 +40,7 @@ app.set("views", path.join(__dirname, `views`));
 app.use("/api/products", productRouter);
 app.use("/api/carts", cartRouter);
 app.use("/api/sessions", sessionsRouter);
+app.use("/api/users", usersRouter);
 app.use("/", viewsRouter);
 app.use("/", loggerRouter);
 

@@ -12,6 +12,12 @@ const productsSchema = new mongoose.Schema(
 		stock: { type: Number, require: true },
 		category: { type: String, require: true },
 		thumbnail: Array,
+		owner: {
+			type: mongoose.Types.ObjectId,
+			ref: "users",
+			default: "admin",
+			require: true,
+		},
 	},
 	{
 		timestamps: true,

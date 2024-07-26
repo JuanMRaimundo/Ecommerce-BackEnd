@@ -1,4 +1,5 @@
 import { ProductsMongoDAO as ProductsDAO } from "../dao/ProductsMongoDAO.js";
+import { usersService } from "../repository/users.service.js";
 import { productModel } from "../dao/models/productModel.js";
 import { isValidObjectId } from "mongoose";
 import { fakerES_MX as faker } from "@faker-js/faker";
@@ -130,10 +131,12 @@ export class ProductsController {
 		}
 	};
 	static createProduct = async (req, res, next) => {
-		req.logger.info("Datos del cuerpo de la solicitud:", req.body);
-		let { title, code, description, price, status, stock, category } = req.body;
-
 		try {
+			req.logger.info("Datos del cuerpo de la solicitud:", req.body);
+			let { title, code, description, price, status, stock, category } =
+				req.body;
+			let user = req.user._id;
+
 			if (
 				!title ||
 				!code ||
@@ -174,6 +177,7 @@ export class ProductsController {
 				status,
 				stock,
 				category,
+				owner: user || "admin",
 			});
 			return res.status(201).json({ payload: newProduct });
 		} catch (error) {

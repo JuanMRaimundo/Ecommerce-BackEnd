@@ -18,7 +18,7 @@ router.post(
 		session: false,
 		failureRedirect: "/api/sessions/error",
 	}),
-	authRole(["admin"]),
+	authRole(["admin", "premium"]),
 	ProductsController.createProduct
 );
 router.put(

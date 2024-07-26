@@ -14,7 +14,7 @@ router.post(
 		session: false,
 		failureRedirect: "/api/sessions/error",
 	}),
-	authRole(["user"]),
+	authRole(["user", "premium"]),
 	CartsController.addProductToCart
 );
 router.post(
@@ -23,7 +23,7 @@ router.post(
 		session: false,
 		failureRedirect: "/api/sessions/error",
 	}),
-	authRole(["user"]),
+	authRole(["user", "premium"]),
 	CartsController.newPurchase
 );
 router.put("/:cid", CartsController.editCart);

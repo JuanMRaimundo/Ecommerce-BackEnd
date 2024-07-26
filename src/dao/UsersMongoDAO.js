@@ -14,4 +14,10 @@ export class UsersMongoDAO {
 		let newUser = await userModel.create(user);
 		return newUser.toJSON();
 	}
+	async updateUser(uid, upDateData) {
+		return await userModel.findByIdAndUpdate(uid, upDateData, {
+			runValidators: true,
+			returnDocument: "after",
+		});
+	}
 }

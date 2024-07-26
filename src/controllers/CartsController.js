@@ -1,9 +1,13 @@
 import { CartsMongoDAO as CartsDAO } from "../dao/CartsMongoDAO.js";
+import { ProductsMongoDAO as ProductsDAO } from "../dao/ProductsMongoDAO.js";
 import { isValidObjectId } from "mongoose";
 import { TicketService } from "../repository/ticket.service.js";
 import { sendMail } from "../utils.js";
+import { ERROR_TYPES } from "../utils/Enum-error.js";
+import { CustomError } from "../utils/CustomError.js";
 
 const cartsDAO = new CartsDAO();
+const productDAO = new ProductsDAO();
 
 export class CartsController {
 	static getCarts = async (req, res) => {
@@ -51,13 +55,32 @@ export class CartsController {
 	};
 	static addProductToCart = async (req, res) => {
 		let { cid, pid } = req.params;
+		let user = req.user;
+
 		if (!isValidObjectId(cid) || !isValidObjectId(pid)) {
 			return res.status(400).json({
 				error: `Ingrese un id valido de MongoDB como argumento para su petición`,
 			});
 		}
+
 		try {
+			let product = await productDAO.getProductBy({ _id: pid });
+			if (!product) {
+				return res.status(404).json({
+					error: "Producto no encontrado",
+				});
+			}
+			console.log("este es el product", product);
+			console.log("el owner del producto: ", product[0].owner);
+			console.log("el user id:", user._id);
+			if (product[0].owner.toString() === user._id.toString()) {
+				return res.status(403).json({
+					error:
+						"Los usuarios premium no pueden agregar sus propios productos al carrito.",
+				});
+			}
 			await cartsDAO.addToCart(cid, pid);
+
 			let cartUpdated = await cartsDAO.getCartById(cid);
 			res.json({ payload: cartUpdated });
 		} catch (error) {
@@ -182,38 +205,38 @@ export class CartsController {
 		}
 	};
 
-	static newPurchase = async (req, res) => {
+	static newPurchase = async (req, res, next) => {
 		let { cid } = req.params;
 		let userId = req.user._id;
-		if (!isValidObjectId(cid)) {
-			return res.status(400).json({
-				error: `El id:${cid}, no es un id válido`,
-			});
-		}
 		try {
+			if (!isValidObjectId(cid)) {
+				CustomError.generateError(
+					"Cart Error",
+					"Carrito no encontrado",
+					`El carrito con id ${cid}, no ha sido encontrado`,
+					ERROR_TYPES.DATA_TYPE
+				);
+				req.logger.error("Carrito no encontrado");
+			}
 			const newTicket = await TicketService.createTicketFromCart(cid, userId);
 			let ticketEnviado = await sendMail(
 				newTicket.purchaser,
 				"¡Compra exitosa!",
 				`
+				<h1>¡¡Hola ${req.user?.first_name}!!</h1>
 				<h2>Gracias por comprar en SNSports</h2><br><br>
 				<p>Tu nro de compra es: ${newTicket.code} por un monto de $${newTicket.amount}</p><br>
 				<p>Ante cualquier duda comunicate con nosotros</p><br><br>
 				`
 			);
 			if (ticketEnviado.accepted.length > 0) {
-				console.log("Registro de compra-Ticket enviado");
+				req.logger.info("Registro de compra-Ticket enviado:" + newTicket);
 			}
 			res
 				.status(201)
 				.json({ message: "Compra realizada con éxito", ticket: newTicket });
 		} catch (error) {
-			res.setHeader("Content-Type", "application/json");
-			req.logger.error("Error al crear un ticket." + "Error:" + error.stack);
-			return res.status(300).json({
-				error: `Error al crear nuevo Ticket`,
-				detalle: `${error.message}`,
-			});
+			next(error);
 		}
 	};
 }

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import passport from "passport";
 import { ViewsController } from "../controllers/ViewsController.js";
-import { authRole } from "../middleware/auth.js";
+import { authRole, verifyRecoveryToken } from "../middleware/auth.js";
 
 export const router = Router();
 
@@ -32,18 +32,15 @@ router.get(
 	passport.authenticate("current", { session: false }),
 	ViewsController.cartView
 );
-/* router.get(
-	"/registration",
-	(req, res) => {
-		if (req.cookies["SNScookie"]?.user) {
-			return res.redirect("/home");
-		}
-		next();
-	},
-	(req, res) => {
-		res.status(200).render("/registration");
-	}
-); */
+router.post(
+	"/passwordRecoveryResponse",
+	ViewsController.requestRecoveryPassword
+);
+router.get(
+	"/passwordRecovery",
+	verifyRecoveryToken,
+	ViewsController.recoveryPasswordView
+);
 router.get("/registration", ViewsController.registrationView);
 router.get("/login", ViewsController.loginView);
 router.get(
