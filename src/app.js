@@ -5,6 +5,8 @@ import { Server } from "socket.io";
 import passport from "passport";
 import path from "path";
 import mongoose from "mongoose";
+import swaggerJsdoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
 
 import { router as productRouter } from "./routes/products.router.js";
 import { router as cartRouter } from "./routes/cart.router.js";
@@ -32,6 +34,34 @@ app.use(cookieParser());
 initPassport();
 app.use(passport.initialize());
 
+//Swagger Configuration
+const options = {
+	definition: {
+		openapi: "3.0.0",
+		info: {
+			title: "SNSports-API",
+			version: "1.0.0",
+			description: 'Documentación de e-Commerce "SNSports',
+		},
+		components: {
+			securitySchemes: {
+				bearerAuth: {
+					type: "http",
+					scheme: "bearer",
+					bearerFormat: "JWT",
+				},
+			},
+		},
+		// servers: [
+		//   {
+		//     url: 'http://localhost:3000',
+		//   },
+		// ],
+	},
+	apis: ["./src/docs/*.yaml"], // Rutas de tus archivos de rutas a documentar
+};
+const specs = swaggerJsdoc(options);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 //HANDLEBARS CONFIGURATION
 app.engine("handlebars", engine());
 

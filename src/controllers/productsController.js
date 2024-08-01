@@ -215,8 +215,8 @@ export class ProductsController {
 				}
 			} catch (error) {
 				res.setHeader("Content-Type", "application/json");
-				return res.status(500).json({
-					error: `Error inesperado en el servidor - Intente más tarde, o contacte a su administrador`,
+				return res.status(404).json({
+					error: `Producto no encontrado`,
 					detalle: `${error.message}`,
 				});
 			}
@@ -227,8 +227,8 @@ export class ProductsController {
 			return res.status(200).json({ editProduct });
 		} catch (error) {
 			res.setHeader("Content-Type", "application/json");
-			return res.status(500).json({
-				error: `Error inesperado en el servidor - Intente más tarde, o contacte a su administrador`,
+			return res.status(400).json({
+				error: `Error al editar producto`,
 				detalle: `${error.message}`,
 			});
 		}
