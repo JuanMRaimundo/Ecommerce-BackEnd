@@ -8,16 +8,18 @@ import { isValidObjectId } from "mongoose";
 
 export class UsersController {
 	static registration = async (req, res) => {
+		console.log("Datos recibidos para registro:", req.body);
 		let userMail;
 		try {
 			userMail = req.body;
 			res.setHeader("Content-Type", "application/json");
+
 			let registroOk = await sendMail(
 				userMail.email,
 				"¡Registro exitoso!",
 				`<h2>Bienvenido/a a SNSports!</h2><br><br>
-					<p>Usuario registrado con email:${userMail.email}</p>
-				`
+						<p>Usuario registrado con email:${userMail.email}</p>
+					`
 			);
 			if (registroOk.accepted.length > 0) {
 				req.logger.info("Email enviado-Usuario registrado");
@@ -27,20 +29,31 @@ export class UsersController {
 				.json({ payload: "Registro exitoso", newUser: req.user });
 		} catch (error) {
 			req.logger.error("Error durante el registro" + "error:" + error.stack);
-			return res.status(400).json("Error al registrarse: ", error.message);
+			return res
+				.status(400)
+				.json({ error: "Error al registrarse", message: error.message });
 		}
 	};
 	static login = async (req, res) => {
 		let { user } = req;
 
+		console.log("log del req.body:", req.body);
+
 		try {
 			let token = jwt.sign(user, config.SECRET, { expiresIn: "1h" });
 			req.logger.info("Datos recibidos:", user);
 			res.cookie("SNScookie", token, { httpOnly: true });
-			res.redirect("/home");
+
+			if (req.body.web) {
+				return res.redirect("/home");
+			} else {
+				return res.status(200).json({ payload: user });
+			}
 		} catch (error) {
 			req.logger.error("Error al iniciar sesion");
-			return res.status(400).json("Error al iniciar sesion: ", error.message);
+			return res
+				.status(400)
+				.json({ error: "Error al iniciar sesión: " + error.message });
 		}
 	};
 	static callBackGitHub = async (req, res) => {
@@ -84,10 +97,9 @@ export class UsersController {
 	};
 	static errorRoute = (req, res) => {
 		res.setHeader("Content-Type", "application/json");
-		req.logger.error("Error de la operación de autenticación");
-		return res
-			.status(500)
-			.json({ error: `Error en la operación de autenticación` });
+		const errorMessage = "Error en la operación de autenticación";
+		req.logger.error(errorMessage);
+		return res.status(400).json({ error: errorMessage });
 	};
 	static logout = (req, res) => {
 		res.clearCookie("SNScookie");

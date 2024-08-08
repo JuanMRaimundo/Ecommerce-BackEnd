@@ -18,7 +18,7 @@ export class CartsMongoDAO {
 			.find()
 			.populate({ path: "products.product" })
 			.lean();
-		console.log(JSON.stringify(carts, null, 5));
+		//console.log(JSON.stringify(carts, null, 5));
 		return carts;
 	}
 	async getCartBy(filter) {
@@ -58,6 +58,7 @@ export class CartsMongoDAO {
 			}
 
 			await searchCart.save();
+			return searchCart;
 		} catch (error) {
 			console.error(error);
 		}

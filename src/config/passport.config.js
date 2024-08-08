@@ -91,18 +91,20 @@ export const initPassport = () => {
 			async (req, username, password, done) => {
 				try {
 					let { first_name, last_name, age, rol } = req.body;
-					if ((!first_name, !last_name, !age)) {
+					if (!first_name || !last_name || !age) {
 						/* CustomError.createUserError({
 							name: "User creation error",
 							cause: userErrorInfo({ first_name, last_name, age, rol }),
 							message: "Error trying to create an user",
 							code: ERROR_TYPES.INVALID_ARGUMENTS,
 						}); */
-						return done(null, false);
+						return done(null, false, { message: "Faltan campos requeridos" });
 					}
 					let exist = await userManager.getUserBy({ email: username });
 					if (exist) {
-						return done(null, false);
+						return done(null, false, {
+							message: "El usuario ya existe en la BD.",
+						});
 					}
 
 					let newCart = await cartManager.createCart();

@@ -1,12 +1,13 @@
 const login = document.getElementById("btnSubmit");
 const recovery = document.getElementById("recoverPasswordLink");
 
-login.addEventListener("submit", async (e) => {
+login.addEventListener("click", async (e) => {
 	e.preventDefault();
 
 	let body = {
 		email: document.querySelector("input[name='email']").value.trim(),
 		password: document.querySelector("input[name='password']").value.trim(),
+		web: "web",
 	};
 
 	try {
@@ -23,13 +24,11 @@ login.addEventListener("submit", async (e) => {
 
 		const data = await response.json();
 
-		if (data.error) {
-			// Mostrar mensaje de error
-			console.error(data.error);
-		} else {
+		if (data.payload) {
 			console.log(data.payload);
-			// Redirigir al home
 			window.location.href = "/home";
+		} else {
+			console.log("Error:", data.error);
 		}
 	} catch (error) {
 		console.error("Error al enviar solicitud de login:", error);
